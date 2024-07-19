@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Los Santos SA MP</string>
+    <string name="title_home">Home</string>
+    <string name="title_favorites">Guardados</string>
+    <string name="title_account">Cuenta</string>
+    <string name="title_login">Login</string>
+    <string name="title_registro">Registro</string>
+    <string name="credenciales_incorrectas">Usuario o contraseña incorrectos, verifica los campos.</string>
+    <string name="login_bienvenida">Bienvenido, inicia sesión en \nLos Santos : SA MP</string>
+    <string name="bienvenida_registro">Registro nuevo usuario en \nLos Santos : SA MP</string>
+    <string name="no_favorite_posts">No hay publicaciones guardadas</string>
+    <string name="wrn_password_8_caracteres">La contraseña debe tener al menos 8 caracteres.</string>
+    <string name="correo_invalido">Correo electrónico inválido. Utiliza un correo real.</string>
+    <string name="correo_ya_en_uso">El correo ya está en uso, cámbialo</string>
+    <string name="regist_not_working">No podemos procesar tu registro en este momento, por favor inténtalo más tarde</string>
+    <string name="register_completed">Registro completado. Iniciando sesión...</string>
+    <string name="must_fill_all_fields">Debe llenar todos los campos</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="registrate_aqui">Registrate Aquí</string>
+    <string name="eres_nuevo">Eres nuevo?</string>
+    <string name="text_btn_login">Login</string>
+    <string name="logo_login_los_santos_samp">Logo Login Los Santos SAMP</string>
+    <string name="ingresa_correo_hint">Ingresa Correo</string>
+    <string name="ingresa_contraseca_hint">Ingresa Contraseña</string>
+    <string name="ya_esta_registrado">Ya está registrado?</string>
+    <string name="registrarse_con_google">Registrarse con Google</string>
+    <string name="text_btn_registrate">Registrate</string>
+    <string name="no_name_user">Sin nombre</string>
+    <string name="editar_nombre_usuario_btn">Editar nombre usuario</string>
+    <string name="newName_already_in_use">Nombre ya esta en uso, no se cambió. Prueba otro</string>
+    <string name="account_not_exist_registry">El correo no está registrado, regístrate.</string>
+    <string name="algo_ha_salido_mal_login">Algo ha salido mal, inténtalo más tarde.</string>
+    <string name="there_no_posts">Aún no hay publicaciones sobre SA:MP\n¡crea la primera!</string>
+    <string name="couldnot_find_posts">No hemos podido encontrar publicaciones en este momento.</string>
+</resources>

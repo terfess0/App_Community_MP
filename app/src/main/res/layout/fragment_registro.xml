@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/registro"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.Login">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginStart="-55dp"
+        android:layout_marginTop="-55dp"
+        android:backgroundTint="@color/naranja_Login"
+        app:cardCornerRadius="190dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginEnd="-55dp"
+        android:layout_marginBottom="-55dp"
+        android:backgroundTint="@color/naranja_Login"
+        app:cardCornerRadius="190dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#FFEFF0F1"
+        android:elevation="1dp"
+        android:visibility="gone"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="100dp"
+        android:background="?attr/colorOnPrimary"
+        android:elevation="2dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="15dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/logo_login_los_santos_samp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_app" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/bienvenida_registro"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnSecondary" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editUserR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ingresa_correo_hint"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:layout_marginTop="10dp"
+                    android:paddingHorizontal="5dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:endIconMode="password_toggle"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPasswordR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ingresa_contraseca_hint"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:paddingHorizontal="5dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/anuncioRegistroFail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/credenciales_incorrectas"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/registrarse_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_weight="1"
+                    android:text="@string/text_btn_registrate"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <ProgressBar
+                    android:id="@+id/progress_regist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:layout_weight="1"
+                    android:indeterminateTint="@color/morado_enfasis"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="2"
+                    android:text="@string/ya_esta_registrado"
+                    android:textAlignment="textEnd" />
+
+                <TextView
+                    android:id="@+id/iraLogin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/login"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/naranja_Login"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="10dp"
+                android:background="#ffffff"
+                android:backgroundTint="@color/morado_enfasis"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/registro_google"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="#00FFFFFF"
+                    android:src="@drawable/ic_google" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@color/naranja_enfasis"
+                    android:text="@string/registrarse_con_google"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

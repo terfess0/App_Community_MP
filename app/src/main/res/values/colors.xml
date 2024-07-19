@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="morado_enfasis">#8317AF</color>
+    <color name="naranja_enfasis">#FF8200</color>
+
+    <color name="naranja_Login">#C8FA8638</color>
+    <color name="rojo">#8A0020</color>
+    <color name="transparente">#00FFFFFF</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="gris_shimer">#969696</color>
+    <color name="gris_shimer_night">#655D6E</color>
+</resources>

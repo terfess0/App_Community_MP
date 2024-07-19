@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:theme="@style/Theme.LosSantosSAMP">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/titulo_favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:text="Tu cuenta"
+            android:textAlignment="center"
+            android:textStyle="bold|italic" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/contain_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            app:cardCornerRadius="75dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btnProfileImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center|bottom"
+                android:background="@color/transparente"
+                android:elevation="5dp"
+                android:src="@android:drawable/ic_menu_add" />
+
+            <!-- Foto de perfil -->
+            <ImageView
+                android:id="@+id/imageViewFotoPerfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="center"
+                android:src="@drawable/predet_image" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/contain_nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contain_image">
+            <!-- Título: Nombre del usuario -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Nombre del Usuario"
+                android:textSize="18sp" />
+
+            <!-- Valor: Nombre del usuario -->
+            <LinearLayout
+                android:id="@+id/tv_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/NameUser"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="@string/no_name_user"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/btn_edit_username"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/transparente"
+                    android:backgroundTint="#002AFF"
+                    android:contentDescription="@string/editar_nombre_usuario_btn"
+                    android:src="@android:drawable/ic_menu_edit" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/edt_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/edtNameUser"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:hint="Sin nombre"
+                    android:maxLength="15"
+                    android:maxLines="1"
+                    android:textColor="?attr/colorOnSecondary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btn_save_username"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/transparente"
+                    android:clickable="false"
+                    android:src="@android:drawable/ic_menu_save" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/error_user_new_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/credenciales_incorrectas"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="13sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/contain_n_publicaciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contain_nombre">
+            <!-- Título: Publicaciones realizadas -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Publicaciones realizadas"
+                android:textSize="18sp" />
+
+            <!-- Valor: Publicaciones realizadas -->
+            <TextView
+                android:id="@+id/NPublicaciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Ninguna"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/contain_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contain_n_publicaciones">
+            <!-- Título: Correo electrónico -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Correo electrónico"
+                android:textSize="18sp" />
+
+            <!-- Valor: Correo electrónico -->
+            <TextView
+                android:id="@+id/UserCorreo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Sin correo"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/contain_fecha_creacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contain_email">
+            <!-- Título: Fecha de creación de la cuenta -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Fecha de creación de la cuenta"
+                android:textSize="18sp" />
+
+            <!-- Valor: Fecha de creación de la cuenta -->
+            <TextView
+                android:id="@+id/FechaCreacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Sin fecha"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+
+        <!-- Botón para cerrar sesión -->
+        <Button
+            android:id="@+id/buttonCerrarSesion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_weight="1"
+            android:text="Cerrar Sesión"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contain_fecha_creacion" />
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/naranja_enfasis"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/buttonCerrarSesion"
+            app:layout_constraintEnd_toEndOf="@+id/buttonCerrarSesion"
+            app:layout_constraintStart_toStartOf="@+id/buttonCerrarSesion"
+            app:layout_constraintTop_toBottomOf="@+id/contain_fecha_creacion" />
+
+    </LinearLayout>
+</ScrollView>
+

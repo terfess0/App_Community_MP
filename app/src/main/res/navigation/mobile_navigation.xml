@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_login">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.terfess.comunidadmp.view.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_navigation_home_to_writePost"
+            app:destination="@id/writePost" />
+        <action
+            android:id="@+id/action_navigation_home_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_login"
+            app:destination="@id/navigation_login"
+            app:popUpTo="@id/navigation_login" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_account"
+        android:name="com.terfess.comunidadmp.view.AccountFragment"
+        android:label="@string/title_account"
+        tools:layout="@layout/fragment_account">
+        <action
+            android:id="@+id/action_navigation_account_to_navigation_login"
+            app:destination="@id/navigation_login"
+            app:popUpTo="@id/navigation_home"/>
+        <action
+            android:id="@+id/action_navigation_account_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.terfess.comunidadmp.view.LoginFragment"
+        android:label="@string/title_login"
+        tools:layout="@layout/fragment_logear">
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_login"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_registro"
+            app:destination="@id/navigation_registro" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_registro"
+        android:name="com.terfess.comunidadmp.view.RegisterFragment"
+        android:label="@string/title_registro"
+        tools:layout="@layout/fragment_registro" >
+        <action
+            android:id="@+id/action_navigation_registro_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_registro"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/writePost"
+        android:name="com.terfess.comunidadmp.view.WritePost"
+        android:label="fragment_write_post"
+        tools:layout="@layout/fragment_write_post" >
+        <action
+            android:id="@+id/action_writePost_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="com.terfess.comunidadmp.view.PostFragment"
+        android:label="fragment_post"
+        tools:layout="@layout/fragment_post" >
+        <action
+            android:id="@+id/action_postFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <argument
+            android:name="postDocumentId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_postFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.terfess.comunidadmp.view.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
+</navigation>
