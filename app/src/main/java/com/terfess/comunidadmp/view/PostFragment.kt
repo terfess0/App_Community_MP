@@ -2,6 +2,7 @@ package com.terfess.comunidadmp.view
 
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.text.util.Linkify
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,8 +34,7 @@ class PostFragment : Fragment() {
         viewModel.getPostDetails(idPost)
 
 
-
-        var adapter = AdapterHolderViewPostImage(emptyList(), requireContext())
+        val adapter = AdapterHolderViewPostImage(emptyList(), requireContext())
         val recyclerimage = binding.viewPostImages
         recyclerimage.adapter = adapter
         recyclerimage.layoutManager = LinearLayoutManager(requireContext())
@@ -45,10 +45,17 @@ class PostFragment : Fragment() {
             val post = info[0]
             // Actualizar la UI con los datos del post
             binding.viewPostTitle.text = post.tituloPost
-            binding.viewPostContent.text = post.cuerpoPost
+
+
+            val cuerpoTxt = binding.viewPostContent
+            cuerpoTxt.text = post.cuerpoPost
+
+            Linkify.addLinks(cuerpoTxt, Linkify.WEB_URLS)
+            cuerpoTxt.movementMethod = android.text.method.LinkMovementMethod.getInstance()
 
             if (post.imagenPost.isNotEmpty()) {
-                recyclerimage.adapter = AdapterHolderViewPostImage(info[0].imagenPost, requireContext())
+                recyclerimage.adapter =
+                    AdapterHolderViewPostImage(info[0].imagenPost, requireContext())
             }
 
 
