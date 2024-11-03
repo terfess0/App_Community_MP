@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="morado_enfasis">#8317AF</color>
+    <color name="morado_enfasis">#981CCA</color>
     <color name="naranja_enfasis">#FF8200</color>
 
     <color name="naranja_Login">#C8FA8638</color>
