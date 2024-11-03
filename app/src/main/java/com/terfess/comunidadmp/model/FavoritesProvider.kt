@@ -24,7 +24,7 @@ class FavoritesProvider(private val callback: GetPostCallback) : ViewModel(), Ge
             0 // Contador para llevar el seguimiento de cuántas publicaciones se han recuperado
 
         if (favorites.isNullOrEmpty()) {
-            callback.onGetPosts(listaPublicaciones)
+            callback.onGetPosts(listaPublicaciones, null)
             Log.e("resultado", "No hay posts favorites :: $listaPublicaciones")
         } else {
 
@@ -57,7 +57,7 @@ class FavoritesProvider(private val callback: GetPostCallback) : ViewModel(), Ge
                         // Incrementar el contador y emitir la lista de publicaciones si todas se han recuperado
                         count++
                         if (count == favorites.size) {
-                            callback.onGetPosts(listaPublicaciones)
+                            callback.onGetPosts(listaPublicaciones, null)
                             Log.i("resultado", "List post favorites is ready")
                         }
                     }
@@ -67,7 +67,7 @@ class FavoritesProvider(private val callback: GetPostCallback) : ViewModel(), Ge
                         // Incrementar el contador en caso de error para asegurar que se emita la lista de publicaciones vacía
                         count++
                         if (count == favorites.size) {
-                            callback.onGetPosts(listaPublicaciones)
+                            callback.onGetPosts(listaPublicaciones, null)
                             callback.onError("Algo salio mal al recuperar posts guardados")
                         }
                     }

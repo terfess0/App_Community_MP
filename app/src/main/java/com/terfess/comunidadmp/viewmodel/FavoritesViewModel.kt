@@ -3,6 +3,7 @@ package com.terfess.comunidadmp.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.DocumentSnapshot
 import com.terfess.comunidadmp.callbacks.posts.FavoritesFirestore
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
 import com.terfess.comunidadmp.model.FavoritesProvider
@@ -21,7 +22,7 @@ class FavoritesViewModel : ViewModel(), GetPostCallback, FavoritesFirestore {
         FavoritesProvider(this).removeFavorite(this, userEmail, idPost)
     }
 
-    override fun onGetPosts(posts: List<Post>) {
+    override fun onGetPosts(posts: List<Post>, lastDoc:DocumentSnapshot?) {
         // update favorites for the view
         postsFavorites.postValue(posts)
     }

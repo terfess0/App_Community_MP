@@ -1,5 +1,6 @@
 package com.terfess.comunidadmp.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -20,10 +21,11 @@ import com.terfess.comunidadmp.model.UserProvider
 import com.terfess.comunidadmp.view.HomeFragmentDirections
 import com.terfess.comunidadmp.viewmodel.PostViewModel
 
-class AdapterHolderHome(private var data: List<Post>, private val viewModel: PostViewModel) :
+class AdapterHolderHome(private var data: MutableList<Post>, private val viewModel: PostViewModel) :
     RecyclerView.Adapter<AdapterHolderHome.Holder>() {
     private val db = FirebaseFirestore.getInstance()
     private val user = Firebase.auth.currentUser
+    private var numNextPag = 10
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val itemView =
@@ -44,6 +46,13 @@ class AdapterHolderHome(private var data: List<Post>, private val viewModel: Pos
         } else {
             holder.bind(currentItem, false)
         }
+
+        if (data.size >= 10){
+            if (position > data.size - 3 && numNextPag > 0){
+                viewModel.getPosts(numNextPag)
+            }
+        }
+
     }
 
     override fun getItemCount() = data.size
@@ -67,7 +76,8 @@ class AdapterHolderHome(private var data: List<Post>, private val viewModel: Pos
             datePost.text = post.fechaPost.toString().substring(0, 10)
 
             //show ad
-            if (showAd) binding.adView.visibility = View.VISIBLE
+            val visibil = if (showAd) View.VISIBLE else View.GONE
+            binding.adView.visibility = visibil
 
             // Visibilidad de la imagen del post
             if (post.imagenPost.isNotEmpty()) {
@@ -144,9 +154,11 @@ class AdapterHolderHome(private var data: List<Post>, private val viewModel: Pos
 
     }
 
-    fun setData(newItems: List<Post>) {
-        data = newItems
-        notifyDataSetChanged()
+    fun setData(newItems: List<Post>, numNextPaginRequest:Int) {
+        numNextPag = numNextPaginRequest
+        val start = data.size
+        data.addAll(newItems)
+        notifyItemRangeInserted(start, newItems.size)
     }
 
     fun loadAd(view: View) {

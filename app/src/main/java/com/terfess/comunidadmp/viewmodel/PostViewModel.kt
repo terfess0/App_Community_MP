@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.DocumentSnapshot
 import com.terfess.comunidadmp.callbacks.posts.DeletePost
 import com.terfess.comunidadmp.callbacks.posts.FavoritesFirestore
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
 import com.terfess.comunidadmp.callbacks.GetUserCallback
+import com.terfess.comunidadmp.callbacks.posts.GetCountPosts
 import com.terfess.comunidadmp.callbacks.posts.OnAttachImagesToPost
 import com.terfess.comunidadmp.callbacks.posts.OnSetNewPost
 import com.terfess.comunidadmp.callbacks.posts.OnUploadImages
@@ -24,7 +26,8 @@ class PostViewModel : ViewModel(),
     DeletePost,
     OnSetNewPost,
     OnUploadImages,
-    OnAttachImagesToPost {
+    OnAttachImagesToPost,
+    GetCountPosts {
 
     val postViewModel = MutableLiveData<List<Post>>()
     val errorGetPost = MutableLiveData<String>()
@@ -34,8 +37,12 @@ class PostViewModel : ViewModel(),
     val resultSetPost = MutableLiveData<String>()
     val errorSetPost = MutableLiveData<String>()
 
-    fun getPosts() {
-        PostRepository().loadPosts(this)
+    val numTotalPost = MutableLiveData<Int>()
+
+    val currentLastDoc = MutableLiveData<DocumentSnapshot>()
+
+    fun getPosts(limit: Int?) {
+        PostRepository().loadPosts(this, currentLastDoc.value, limit ?: 10)
         Log.i("VMPost", "Posts han sido solicitados desde viewmodel")
     }
 
@@ -51,6 +58,18 @@ class PostViewModel : ViewModel(),
         UserProvider().getUserAccount(this)
     }
 
+    fun getCountPost() {
+        PostRepository().getAllPostCount(this)
+    }
+
+    override fun AtSucces(count: Int) {
+        numTotalPost.postValue(count)
+    }
+
+    override fun errorGetCount(error: String) {
+        Log.e("VMPost", "Algo ha salido mal al recuperar numero posts :: $error")
+    }
+
     fun deletePostAdmin(postId: String) {
         PostRepository().deletePost(this, postId)
     }
@@ -63,8 +82,11 @@ class PostViewModel : ViewModel(),
         PostRepository().uploadImagesGetUrl(this, context, images)
     }
 
-    override fun onGetPosts(posts: List<Post>) {
+    override fun onGetPosts(posts: List<Post>, lastDoc: DocumentSnapshot?) {
         postViewModel.postValue(posts)
+        if (lastDoc != null) {
+            currentLastDoc.postValue(lastDoc!!)
+        }
         Log.i("VMPost", "Posts obtenidos en viewmodel")
     }
 
@@ -134,6 +156,5 @@ class PostViewModel : ViewModel(),
     override fun onAttachImgsError() {
         errorSetPost.postValue("ERROR_ATTACH")
     }
-
 
 }

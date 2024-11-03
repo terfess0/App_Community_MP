@@ -15,8 +15,8 @@ android {
         applicationId = "com.terfess.comunidadmp"
         minSdk = 23
         targetSdk = 34
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = 6
+        versionName = "1.0.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,14 +49,13 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation("androidx.activity:activity-ktx:1.9.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
-    implementation("androidx.fragment:fragment-ktx:1.8.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
+    implementation("androidx.fragment:fragment-ktx:1.8.2")
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.media3:media3-exoplayer:1.3.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -66,7 +65,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     //ads
-    implementation("com.google.android.gms:play-services-ads:23.2.0")
+    implementation("com.google.android.gms:play-services-ads:23.3.0")
 
     //firebase
     implementation("com.google.firebase:firebase-auth:23.0.0")
@@ -82,4 +81,7 @@ dependencies {
 
     //shimer facebook
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+    //swipe refresh
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
 }

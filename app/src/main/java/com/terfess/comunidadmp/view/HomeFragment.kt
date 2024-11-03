@@ -2,11 +2,8 @@ package com.terfess.comunidadmp.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -14,10 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.terfess.comunidadmp.R
 import com.terfess.comunidadmp.adapters.AdapterHolderHome
@@ -26,6 +19,10 @@ import com.terfess.comunidadmp.classes.UserRole
 import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.databinding.FragmentHomeBinding
 import com.terfess.comunidadmp.viewmodel.PostViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -35,6 +32,7 @@ class HomeFragment : Fragment() {
     private lateinit var adaptador: AdapterHolderHome
 
     private val postViewModel: PostViewModel by viewModels()
+    private var numPosts = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,8 +45,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        // call to function get posts Firestore
-        postViewModel.getPosts()
+        // call to function get num posts Firestore
+        postViewModel.getCountPost()
+
         // call to function for get user info
         postViewModel.getUserAccount()
 
@@ -65,7 +64,7 @@ class HomeFragment : Fragment() {
         val recicler = binding.contenido
 
 
-        adaptador = AdapterHolderHome(emptyList(), postViewModel)
+        adaptador = AdapterHolderHome(mutableListOf(), postViewModel)
         recicler.adapter = adaptador
         recicler.layoutManager = LinearLayoutManager(requireContext())
 
@@ -73,26 +72,41 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_home_to_writePost)
         }
 
-        // Escucha el evento de deslizar para recargar
-        recicler.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) PostViewModel().getPosts()
-
-            false
+        // Listener at swipe to refresh
+        binding.swiperefresh.setOnRefreshListener {
+            refreshPosts()
         }
 
         //-------------------OBSERVERS
 
         postViewModel.dataUser.observe(viewLifecycleOwner, Observer {
-
             //save userRole un shared preferences local
             Utilities().saveSharedpref(requireContext(), "userRole", it.userRole)
             //verify user role local
             verifyUserRole()
         })
 
+        postViewModel.numTotalPost.observe(viewLifecycleOwner, Observer {
+            println("Numero de post: $it")
+            numPosts = it
+            // call to function get posts
+            postViewModel.getPosts(null)
+        })
+
         postViewModel.postViewModel.observe(viewLifecycleOwner, Observer { items ->
             // Actualiza tu UI con la lista de items
-            adaptador.setData(items)
+            print("Valor numPost 1: $numPosts ")
+            numPosts -= 10
+            println("Valor numPost 2: $numPosts")
+            if (numPosts != 0) {
+                val numPaginReq = 10
+
+                if (numPosts >= 10) {
+                    adaptador.setData(items, numPaginReq)
+                } else {
+                    adaptador.setData(items, numPosts)
+                }
+            }
 
             progressBar.visibility = View.GONE
 
@@ -104,6 +118,9 @@ class HomeFragment : Fragment() {
             } else {
                 binding.noPostsText.visibility = View.GONE
             }
+
+            // Cancel swipe anim
+            binding.swiperefresh.isRefreshing = false
         })
 
         postViewModel.resultAddFavorite.observe(viewLifecycleOwner, Observer { result ->
@@ -137,7 +154,7 @@ class HomeFragment : Fragment() {
                 ).show()
             }
 
-            postViewModel.getPosts()
+            postViewModel.getPosts(null)
         })
 
 
@@ -156,7 +173,7 @@ class HomeFragment : Fragment() {
                     binding.errorReload.visibility = View.VISIBLE
                     binding.reloadPosts.setOnClickListener {
                         binding.errorReload.visibility = View.GONE
-                        postViewModel.getPosts()
+                        postViewModel.getPosts(null)
                     }
                 }
             }
@@ -183,6 +200,16 @@ class HomeFragment : Fragment() {
 
         //----------------------------------------
 
+    }
+
+    private fun refreshPosts() {
+        postViewModel.currentLastDoc.postValue(null)
+        postViewModel.getPosts(null)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(2000)
+            binding.swiperefresh.isRefreshing = false
+        }
     }
 
     private fun verifyUserRole() {

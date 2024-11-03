@@ -19,8 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/contenido"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="2dp"
@@ -28,8 +28,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toBottomOf="@+id/titulo_favorites"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        app:swipeRefreshLayoutProgressSpinnerBackgroundColor="@color/naranja_enfasis">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/contenido"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/progressShimer"

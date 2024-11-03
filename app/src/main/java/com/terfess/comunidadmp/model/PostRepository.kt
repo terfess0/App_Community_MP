@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.getField
 import com.google.firebase.storage.FirebaseStorage
 import com.terfess.comunidadmp.callbacks.posts.DeletePost
 import com.terfess.comunidadmp.callbacks.posts.FavoritesFirestore
+import com.terfess.comunidadmp.callbacks.posts.GetCountPosts
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
 import com.terfess.comunidadmp.callbacks.posts.OnAttachImagesToPost
 import com.terfess.comunidadmp.callbacks.posts.OnSetNewPost
@@ -36,18 +38,29 @@ class PostRepository : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
-    fun loadPosts(callback: GetPostCallback) {
+    fun loadPosts(callback: GetPostCallback, lastPostIdPagin: DocumentSnapshot?, limitPosts: Int) {
         CoroutineScope(Dispatchers.Default).launch {
-            db.collection("posts")
+
+            var preQuery: Query = db.collection("posts")
                 .orderBy(
                     "fechaPost",
                     Query.Direction.DESCENDING
                 ) // Ordenar por fecha de publicación descendente
+
+            // Si hay un último documento, usa startAfter
+            if (lastPostIdPagin != null) {
+                preQuery = preQuery.startAfter(lastPostIdPagin)
+                println("añadido afterstart")
+            }
+
+            preQuery.limit(limitPosts.toLong())
                 .get()
                 .addOnSuccessListener { documents ->
                     if (documents.isEmpty) {
                         callback.onError("THERE_NO_POSTS")
+                        return@addOnSuccessListener
                     }
+
                     val listaPublicaciones = mutableListOf<Post>()
                     for (document in documents) {
                         val fechaPost = document.getDate("fechaPost") ?: ""
@@ -69,7 +82,7 @@ class PostRepository : ViewModel() {
                         )
                         listaPublicaciones.add(post)
                     }
-                    callback.onGetPosts(listaPublicaciones)
+                    callback.onGetPosts(listaPublicaciones, documents.last())
                 }
                 .addOnFailureListener { exception ->
                     val errorMessage = if (exception is FirebaseFirestoreException) {
@@ -116,7 +129,7 @@ class PostRepository : ViewModel() {
                                 emailAutorPost
                             )
                         )
-                        callback.onGetPosts(post)
+                        callback.onGetPosts(post, null)
 
                     } else {
                         callback.onError("NOT_FOUND")
@@ -220,14 +233,16 @@ class PostRepository : ViewModel() {
             val uploadJobs = images.map { image ->
                 async {
                     val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        val source = ImageDecoder.createSource(context.contentResolver, image.imageLink)
+                        val source =
+                            ImageDecoder.createSource(context.contentResolver, image.imageLink)
                         ImageDecoder.decodeBitmap(source)
                     } else {
                         MediaStore.Images.Media.getBitmap(context.contentResolver, image.imageLink)
                     }
 
                     val compressedBytes = ImageUtils.compressBitmap(bitmap, 150000)
-                    val fileName = "${System.currentTimeMillis()}_${File(image.imageLink.path!!).name}"
+                    val fileName =
+                        "${System.currentTimeMillis()}_${File(image.imageLink.path!!).name}"
                     val riversRef = storageRef.child("images/imagePost/$fileName")
 
                     try {
@@ -281,5 +296,31 @@ class PostRepository : ViewModel() {
                 callback.onAttachImgsError()
             }
 
+    }
+
+    fun getAllPostCount(callback: GetCountPosts) {
+        CoroutineScope(Dispatchers.IO).launch {
+            db.collection("posts")
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (documents.isEmpty) {
+                        callback.errorGetCount("THERE_NO_POSTS")
+                    } else {
+                        callback.AtSucces(documents.count())
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    val errorMessage = if (exception is FirebaseFirestoreException) {
+                        if (exception.code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                            "PERMISSION_DENIED"
+                        } else {
+                            exception.message ?: "UNKNOWN_ERROR"
+                        }
+                    } else {
+                        exception.message ?: "UNKNOWN_ERROR"
+                    }
+                    callback.errorGetCount(errorMessage)
+                }
+        }
     }
 }

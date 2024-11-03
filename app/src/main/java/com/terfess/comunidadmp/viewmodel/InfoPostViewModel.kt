@@ -2,6 +2,7 @@ package com.terfess.comunidadmp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.DocumentSnapshot
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
 import com.terfess.comunidadmp.model.Post
 import com.terfess.comunidadmp.model.PostRepository
@@ -14,7 +15,7 @@ class InfoPostViewModel : ViewModel(), GetPostCallback {
         PostRepository().loadInfoPost(this, postId)
     }
 
-    override fun onGetPosts(posts: List<Post>) {
+    override fun onGetPosts(posts: List<Post>, lastDoc:DocumentSnapshot?) {
         postDetails.postValue(posts)
     }
 
