@@ -41,7 +41,7 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
         val currentItem = data[position]
 
         //show ad each 5 post
-        if (position % 5 == 0) {
+        if (position % 8 == 0) {
             holder.bind(currentItem, true)
         } else {
             holder.bind(currentItem, false)
