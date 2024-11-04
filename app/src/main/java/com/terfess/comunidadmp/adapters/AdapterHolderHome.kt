@@ -167,5 +167,10 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }
+
+    fun deleteData(){
+        data.clear()
+        notifyDataSetChanged()
+    }
 }
 

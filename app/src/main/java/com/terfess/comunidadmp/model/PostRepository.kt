@@ -50,7 +50,9 @@ class PostRepository : ViewModel() {
             // Si hay un último documento, usa startAfter
             if (lastPostIdPagin != null) {
                 preQuery = preQuery.startAfter(lastPostIdPagin)
-                println("añadido afterstart")
+                println("-----Hay ultimo post, añadido inicio paginacion (afterstart)")
+            }else{
+                println("-----No hay ultimo documento")
             }
 
             preQuery.limit(limitPosts.toLong())

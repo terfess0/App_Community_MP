@@ -157,7 +157,6 @@ class HomeFragment : Fragment() {
             postViewModel.getPosts(null)
         })
 
-
         postViewModel.errorGetPost.observe(viewLifecycleOwner, Observer { error ->
             when (error) {
                 "PERMISSION_DENIED" -> {
@@ -203,11 +202,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun refreshPosts() {
+        //clean last doc in view model
         postViewModel.currentLastDoc.postValue(null)
-        postViewModel.getPosts(null)
 
+        adaptador.deleteData()
+
+        postViewModel.currentLastDoc.observe(viewLifecycleOwner, Observer {
+            postViewModel.getCountPost()
+        })
+
+        //hide swipe refresh at 1 second
         CoroutineScope(Dispatchers.Main).launch {
-            delay(2000)
+            delay(1000)
             binding.swiperefresh.isRefreshing = false
         }
     }

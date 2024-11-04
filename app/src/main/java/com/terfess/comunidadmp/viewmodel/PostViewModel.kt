@@ -42,9 +42,25 @@ class PostViewModel : ViewModel(),
     val currentLastDoc = MutableLiveData<DocumentSnapshot>()
 
     fun getPosts(limit: Int?) {
+        println("CurrentLastDoc: ${currentLastDoc.value}")
         PostRepository().loadPosts(this, currentLastDoc.value, limit ?: 10)
         Log.i("VMPost", "Posts han sido solicitados desde viewmodel")
     }
+
+    override fun onGetPosts(posts: List<Post>, lastDoc: DocumentSnapshot?) {
+        postViewModel.postValue(posts)
+
+        if (lastDoc != null) {
+            currentLastDoc.postValue(lastDoc!!)
+        }
+        Log.i("VMPost", "Posts obtenidos en viewmodel")
+    }
+
+    override fun onError(error: String) {
+        errorGetPost.postValue(error)
+        Log.e("VMPost", "Algo ha salido mal al recuperar posts :: $error")
+    }
+
 
     fun addFavorite(userEmail: String, idPost: String) {
         PostRepository().addFavorite(
@@ -80,19 +96,6 @@ class PostViewModel : ViewModel(),
 
     fun uploadImagesPost(images: MutableList<ImageSelected>, context: Context) {
         PostRepository().uploadImagesGetUrl(this, context, images)
-    }
-
-    override fun onGetPosts(posts: List<Post>, lastDoc: DocumentSnapshot?) {
-        postViewModel.postValue(posts)
-        if (lastDoc != null) {
-            currentLastDoc.postValue(lastDoc!!)
-        }
-        Log.i("VMPost", "Posts obtenidos en viewmodel")
-    }
-
-    override fun onError(error: String) {
-        errorGetPost.postValue(error)
-        Log.e("VMPost", "Algo ha salido mal al recuperar posts :: $error")
     }
 
     override fun onRemoveFavorite(result: String) {
