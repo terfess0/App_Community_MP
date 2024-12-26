@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -62,6 +63,20 @@ class AccountFragment : Fragment() {
 
         viewModelUser.getUserAccount()
 
+        //-----------------STATE LOGIN-----
+        // Obtener el estado de login desde SharedPreferences
+        val loginState = Utilities().getRegistSheredPref("LoginState", requireContext())
+
+        // Si no esta logeado entonces logear como anonimo
+
+        binding.alertLogin.visibility = View.GONE
+        if (loginState != "true") {
+            binding.linear.alpha = 0.12f
+            binding.alertLogin.visibility = View.VISIBLE
+            binding.btnGoLogin.setOnClickListener {
+                findNavController().navigate(R.id.action_navigation_account_to_navigation_login)
+            }
+        }
 
         //-------------------OBSERVERS
 
