@@ -1,6 +1,7 @@
 package com.terfess.comunidadmp.view
 
 import android.os.Bundle
+import android.renderscript.Script.FieldBase
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -17,7 +19,9 @@ import com.terfess.comunidadmp.adapters.AdapterHolderHome
 import com.terfess.comunidadmp.classes.Roles
 import com.terfess.comunidadmp.classes.UserRole
 import com.terfess.comunidadmp.classes.Utilities
+import com.terfess.comunidadmp.databinding.ActivityMainBinding
 import com.terfess.comunidadmp.databinding.FragmentHomeBinding
+import com.terfess.comunidadmp.services.FirebaseAuth
 import com.terfess.comunidadmp.viewmodel.PostViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +34,11 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adaptador: AdapterHolderHome
+    private lateinit var authUtilsInst: FirebaseAuth
 
     private val postViewModel: PostViewModel by viewModels()
     private var numPosts = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,13 +57,17 @@ class HomeFragment : Fragment() {
         // call to function for get user info
         postViewModel.getUserAccount()
 
+        authUtilsInst = FirebaseAuth()
 
         // Obtener el estado de login desde SharedPreferences
         val loginState = Utilities().getRegistSheredPref("LoginState", requireContext())
 
-        // Navegar a login si no esta logeado
-        if (loginState != "true") {
-            findNavController().navigate(R.id.action_navigation_home_to_navigation_login)
+        // Si no esta logeado entonces logear como anonimo
+        if (loginState != "true" && loginState != "partial") {
+            authUtilsInst.loginAnonymously()
+
+            // Save state login anonymously
+            Utilities().saveSharedpref(requireContext(), "LoginState", "partial")
         }
 
         val progressBar = binding.progressShimer
@@ -69,7 +79,25 @@ class HomeFragment : Fragment() {
         recicler.layoutManager = LinearLayoutManager(requireContext())
 
         binding.newPublisBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_navigation_home_to_writePost)
+            // Verify auth state
+            val isAnony = authUtilsInst.sessionIsAnonymously()
+            if (isAnony) {
+                Utilities().showAlert(
+                    requireContext(),
+                    "Inicia Sesión",
+                    "Para publicar debes iniciar sesión",
+                    "Aceptar",
+                    null,
+                    false,
+                    {
+                        findNavController().navigate(R.id.action_navigation_home_to_navigation_login)
+                    },
+                    {}
+                )
+            } else {
+                findNavController().navigate(R.id.action_navigation_home_to_writePost)
+            }
+
         }
 
         // Listener at swipe to refresh
@@ -93,7 +121,7 @@ class HomeFragment : Fragment() {
             postViewModel.getPosts(null)
         })
 
-        postViewModel.postViewModel.observe(viewLifecycleOwner, Observer { items ->
+        postViewModel.postViewModel.observe(this.viewLifecycleOwner, Observer { items ->
             // Actualiza tu UI con la lista de items
             print("Valor numPost 1: $numPosts ")
             numPosts -= 10
@@ -123,24 +151,44 @@ class HomeFragment : Fragment() {
             binding.swiperefresh.isRefreshing = false
         })
 
-        postViewModel.resultAddFavorite.observe(viewLifecycleOwner, Observer { result ->
+        postViewModel.resultAddFavorite.observe(this@HomeFragment.viewLifecycleOwner, Observer { result ->
             when (result) {
                 "SUCCESS" -> {
-//                    Snackbar.make(requireView(), "Post guardado", Snackbar.LENGTH_SHORT).show()
+//                    Utilities().showAlert(
+//                        requireContext(),
+//                        "Post guardado",
+//                        "El post se guardo correctamente",
+//                        "Aceptar",
+//                        null,
+//                        false,
+//                        {},
+//                        {}
+//                    )
                 }
 
                 "ALREADY_EXISTS" -> {
-//                    Snackbar.make(requireView(), "Ya guardaste este post", Snackbar.LENGTH_SHORT).show()
+//                    Utilities().showAlert(
+//                        requireContext(),
+//                        "Post guardado",
+//                        "El post ya estaba guardado",
+//                        "Aceptar",
+//                        null,
+//                        false,
+//                        {},
+//                        {}
+//                    )
+
                 }
 
                 else -> {
-                    Snackbar.make(
-                        requireView(),
-                        "Algo salio mal, no se pudo guardar el favorito",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+//                    Snackbar.make(
+//                        requireView(),
+//                        "Algo salio mal, no se pudo guardar el favorito",
+//                        Snackbar.LENGTH_SHORT
+//                    ).show()
                 }
             }
+
         })
 
         postViewModel.resultDelPost.observe(viewLifecycleOwner, Observer { resultado ->
@@ -184,16 +232,17 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val alert = AlertDialog.Builder(requireContext())
-                    alert.setMessage("¿Quieres salir de la app?")
-                    alert.setPositiveButton("Salir") { _, _ ->
-                        requireActivity().finish() // Cierra la actividad actual
-                    }
-                    alert.setNegativeButton("Cancelar") { dialog, _ ->
-                        dialog.dismiss() // Cerrar el diálogo sin realizar ninguna acción adicional
-                    }
-                    alert.show()
 
+                    Utilities().showAlert(
+                        requireContext(),
+                        "Salir de la app",
+                        "¿Quieres salir de la app?",
+                        "Aceptar",
+                        "Permanecer",
+                        true,
+                        { requireActivity().finish() },
+                        {}
+                    )
                 }
             })
 
@@ -234,6 +283,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

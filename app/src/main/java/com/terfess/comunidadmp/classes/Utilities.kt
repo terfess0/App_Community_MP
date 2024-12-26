@@ -1,7 +1,11 @@
 package com.terfess.comunidadmp.classes
 
+import android.app.AlertDialog
 import android.content.Context
+import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -125,6 +129,47 @@ class Utilities {
         return sharedPreferences.getString(claveDato, null)
     }
 
+    fun makeSnackbar(root: View, message: String, colorRes: Int) {
+        val snackbar = Snackbar.make(root, message, Snackbar.LENGTH_SHORT)
 
+        // Personalizar la posición (arriba)
+        val snackbarView = snackbar.view
+        val params = snackbarView.layoutParams as FrameLayout.LayoutParams
+        params.gravity = Gravity.TOP
+        snackbarView.layoutParams = params
 
+        // Personalizar el color de fondo
+        snackbarView.setBackgroundColor(ContextCompat.getColor(root.context, colorRes))
+
+        snackbar.show()
+    }
+
+    fun showAlert(
+        context: Context,
+        title: String,
+        message: String,
+        textOpAcept: String,
+        textOpCancel: String?,
+        addOptCancel: Boolean,
+        onAccept: () -> Unit,
+        onCancel: () -> Unit
+    ) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(textOpAcept) { dialog, _ ->
+                onAccept() // Acción al aceptar
+                dialog.dismiss() // Cierra la alerta
+            }
+
+        if (addOptCancel) {
+            builder.setNegativeButton(textOpCancel) { dialog, _ ->
+                onCancel() // Acción al cancelar
+                dialog.dismiss() // Cierra la alerta
+            }
+        }
+
+        builder.create()
+        builder.show()
+    }
 }
