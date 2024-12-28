@@ -13,6 +13,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="azul_transparent">#E8315762</color>
+    <color name="gris_transparent">#48897F7F</color>
+
     <color name="gris_shimer">#969696</color>
     <color name="gris_shimer_night">#655D6E</color>
 </resources>

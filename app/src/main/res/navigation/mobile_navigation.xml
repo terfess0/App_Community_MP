@@ -30,7 +30,7 @@
     <fragment
         android:id="@+id/navigation_account"
         android:name="com.terfess.comunidadmp.view.AccountFragment"
-        android:label="@string/title_account"
+        android:label="@string/"
         tools:layout="@layout/fragment_account">
         <action
             android:id="@+id/action_navigation_account_to_navigation_login"
@@ -102,5 +102,20 @@
         <action
             android:id="@+id/action_favoritesFragment_to_navigation_home"
             app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/mediaFragment"
+        android:name="com.terfess.comunidadmp.view.MediaFragment"
+        android:label="@string/multimedia"
+        tools:layout="@layout/fragment_media">
+        <action
+            android:id="@+id/action_mediaFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_mediaFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_navigation_account"
+            app:destination="@id/navigation_account" />
     </fragment>
 </navigation>

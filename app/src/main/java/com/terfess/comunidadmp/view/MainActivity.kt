@@ -28,11 +28,14 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
         // Configurar AppBarConfiguration con los destinos de nivel superior
-        AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_account, R.id.favoritesFragment
-            )
-        )
+//        AppBarConfiguration(
+//            setOf(
+//                R.id.navigation_home,
+//                R.id.favoritesFragment,
+//                R.id.mediaFragment,
+//                R.id.navigation_account
+//            )
+//        )
 
 
         // Configurar BottomNavigationView con NavController
@@ -42,12 +45,14 @@ class MainActivity : AppCompatActivity() {
         // Escuchar cambios en el destino de navegación
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_home, R.id.favoritesFragment, R.id.navigation_account -> {
+                R.id.navigation_home, R.id.favoritesFragment, R.id.navigation_account, R.id.mediaFragment -> {
                     navView.visibility = View.VISIBLE
                 }
+
                 R.id.navigation_login, R.id.navigation_registro -> {
                     navView.visibility = View.GONE
                 }
+
                 else -> {
                     navView.visibility = View.GONE
                 }

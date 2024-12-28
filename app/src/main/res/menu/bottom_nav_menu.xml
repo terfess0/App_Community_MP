@@ -12,7 +12,12 @@
         android:title="@string/title_favorites" />
 
     <item
+        android:id="@+id/mediaFragment"
+        android:icon="@drawable/ic_media_btn_fragment"
+        android:title="@string/multimedia" />
+
+    <item
         android:id="@+id/navigation_account"
         android:icon="@drawable/ic_account_nav"
-        android:title="@string/title_account" />
+        android:title="@string/" />
 </menu>

@@ -13,6 +13,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
         <!-- Customize your theme here. -->
+        <item name="fontFamily">@font/open_sans</item>
     </style>
 
     <style name="Theme.Splash" parent="Theme.SplashScreen">
@@ -55,5 +56,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="StyleTextMediaCard">
+        <item name="android:textSize">10sp</item>
     </style>
 </resources>

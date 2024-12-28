@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bienvenida_registro">New user registration in Los Santos: SA MP</string>
+    <string name="no_favorite_posts">There are no saved posts</string>
+    <string name="wrn_password_8_caracteres">The password must be at least 8 characters.</string>
+    <string name="correo_invalido">Invalid email. Please use a real email.</string>
+    <string name="correo_ya_en_uso">The email is already in use, please change it</string>
+    <string name="regist_not_working">We are unable to process your registration at this time, please try again later.</string>
+    <string name="register_completed">Registration completed. Logging in...</string>
+    <string name="must_fill_all_fields">You must fill in all fields</string>
+    <string name="title_home">Home</string>
+    <string name="title_favorites">Saved</string>
+    <string name="title_account">Account</string>
+    <string name="title_login">Login</string>
+    <string name="title_registro">Registry</string>
+    <string name="credenciales_incorrectas">Incorrect username or password, please check the fields.</string>
+    <string name="login">Login</string>
+    <string name="registrate_aqui">Register Here</string>
+    <string name="eres_nuevo">¿Are you new?</string>
+    <string name="text_btn_login">Login</string>
+    <string name="logo_login_los_santos_samp">Logo Login Los Santos SAMP</string>
+    <string name="ingresa_correo_hint">Enter Email</string>
+    <string name="ingresa_contraseca_hint">Enter Password</string>
+    <string name="ya_esta_registrado">Already registered?</string>
+    <string name="registrarse_con_google">Sign up with Google</string>
+    <string name="text_btn_registrate">Register</string>
+    <string name="no_name_user">Unnamed</string>
+    <string name="editar_nombre_usuario_btn">Edit username</string>
+    <string name="newName_already_in_use">Name is already in use, it has not been changed. Try another one</string>
+    <string name="account_not_exist_registry">The email is not registered, please register.</string>
+    <string name="algo_ha_salido_mal_login">Something went wrong, please try again later.</string>
+    <string name="there_no_posts">There are no posts about SA:MP yet</string>
+    <string name="couldnot_find_posts">be the first one!</string>
+    <string name="leer_mas">We were unable to find any posts at this time.</string>
+    <string name="multimedia">Multimedia</string>
+    <string name="no_elements_media">There are no items in this section yet, create one!</string>
+    <string name="descripcion_mediascreen">This section is designed for publishing and testing streaming music links that will be used on SA-MP servers, for example in car radio on Roleplay servers.</string>
+    <string name="bienvenido_a_la_app">Welcome, log in to Los Santos : SA MP</string>
+    <string name="cero">0</string>
+    <string name="play">Play</string>
+    <string name="pega_link_test">Paste streaming link to test it.</string>
+</resources>

@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">Los Santos SA MP</string>
+    <string name="app_name" translatable="false">Los Santos SA MP</string>
     <string name="title_home">Home</string>
     <string name="title_favorites">Guardados</string>
     <string name="title_account">Cuenta</string>
     <string name="title_login">Login</string>
     <string name="title_registro">Registro</string>
     <string name="credenciales_incorrectas">Usuario o contraseña incorrectos, verifica los campos.</string>
-    <string name="login_bienvenida">Bienvenido, inicia sesión en \nLos Santos : SA MP</string>
-    <string name="bienvenida_registro">Registro nuevo usuario en \nLos Santos : SA MP</string>
+    <string name="bienvenido_a_la_app">Bienvenido, inicia sesión en  Los Santos : SA MP</string>
+    <string name="bienvenida_registro">Registro nuevo usuario en  Los Santos : SA MP</string>
     <string name="no_favorite_posts">No hay publicaciones guardadas</string>
     <string name="wrn_password_8_caracteres">La contraseña debe tener al menos 8 caracteres.</string>
     <string name="correo_invalido">Correo electrónico inválido. Utiliza un correo real.</string>
@@ -17,7 +17,7 @@
     <string name="must_fill_all_fields">Debe llenar todos los campos</string>
     <string name="login">Iniciar Sesión</string>
     <string name="registrate_aqui">Registrate Aquí</string>
-    <string name="eres_nuevo">Eres nuevo?</string>
+    <string name="eres_nuevo">¿Eres nuevo?</string>
     <string name="text_btn_login">Login</string>
     <string name="logo_login_los_santos_samp">Logo Login Los Santos SAMP</string>
     <string name="ingresa_correo_hint">Ingresa Correo</string>
@@ -33,4 +33,11 @@
     <string name="there_no_posts">Aún no hay publicaciones sobre SA:MP\n¡crea la primera!</string>
     <string name="couldnot_find_posts">No hemos podido encontrar publicaciones en este momento.</string>
     <string name="leer_mas">Leer más...</string>
+
+    <string name="multimedia">Multimedia</string>
+    <string name="no_elements_media">No hay elementos en esta sección aún, ¡Crea uno!</string>
+    <string name="descripcion_mediascreen">Esta sección está diseñada para la publicación y prueba de enlaces de música streaming que serán utilizados en servidores de SA-MP, por ejemplo en emisora del auto en servidores Roleplay.</string>
+    <string name="cero">0</string>
+    <string name="play">Play</string>
+    <string name="pega_link_test">Pega un enlace stream para probarlo.</string>
 </resources>
