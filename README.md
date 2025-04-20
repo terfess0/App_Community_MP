@@ -1,6 +1,6 @@
 # 🎮 GTA San Andreas Multiplayer Social App
 
-![Logo de la app](https://github.com/hdfray/app_comunidad_mp/assets/73000354/43291ee3-f17c-4550-8985-d96d17e8f675)
+# Disponible en [Google Play Store](https://play.google.com/store/apps/details?id=com.terfess.comunidadmp)
 
 ## 📝 Descripción
 
@@ -22,15 +22,9 @@ Esta es una aplicación móvil desarrollada en Android Studio con Kotlin que pro
 - Glide (Librería para cargar imágenes)
 - Librería para hacer zoom en imágenes
 
-## 📲 Instalación
+## 📄 Licencia
 
-1. Clona este repositorio en tu máquina local.
-
-   ```
-   git clone https://github.com/terfess0/App_Comunity_SAMP.git
-   ```
-2. Abre el proyecto en Android Studio.
-3. Conecta tu dispositivo Android y ejecuta la aplicación.
+Este proyecto está licenciado bajo la Licencia GPL-3.0 - ver el archivo [LICENSE](./LICENSE) para más detalles.
 
 ## 📧 Soporte
 
