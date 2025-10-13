@@ -39,6 +39,7 @@ class AdapterHolderViewPostImage(private var dataImages: List<String>, private v
             Glide.with(context)
                 .load(image)
                 .placeholder(R.drawable.predet_image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding.imageView)
 
             binding.imageView.setOnClickListener {
@@ -58,7 +59,6 @@ class AdapterHolderViewPostImage(private var dataImages: List<String>, private v
                     .placeholder(R.drawable.predet_image)
                     .error(R.drawable.predet_image)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(false)
                     .into(imageView)
 
                 alertDialog.show()

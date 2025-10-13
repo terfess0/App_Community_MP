@@ -8,6 +8,7 @@ import com.terfess.comunidadmp.model.Post
 import android.view.View
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.firebase.Firebase
@@ -46,8 +47,8 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
             holder.bind(currentItem, false)
         }
 
-        if (data.size >= 10){
-            if (position > data.size - 3 && numNextPag > 0){
+        if (data.size >= 10) {
+            if (position > data.size - 3 && numNextPag > 0) {
                 viewModel.getPosts(numNextPag)
             }
         }
@@ -85,6 +86,7 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
                 Glide.with(itemView)
                     .load(post.imagenPost[0])
                     .placeholder(R.drawable.predet_image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imagenP)
             } else {
                 containImg.visibility = View.GONE
@@ -117,6 +119,7 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
                             Glide.with(itemView)
                                 .load(photoUser)
                                 .placeholder(R.drawable.predet_image)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(perfilAutorImg)
                         }
 
@@ -153,11 +156,13 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
 
     }
 
-    fun setData(newItems: List<Post>, numNextPaginRequest:Int) {
+    fun setData(newItems: List<Post>, numNextPaginRequest: Int) {
         numNextPag = numNextPaginRequest
-        val start = data.size
+        println("Numero New de posts en lista:: -> ${data.size}")
+        data.clear()
         data.addAll(newItems)
-        notifyItemRangeInserted(start, newItems.size)
+        println("Numero New de posts en lista:: -> ${data.size}")
+        notifyDataSetChanged()
     }
 
     fun loadAd(view: View) {
@@ -167,7 +172,7 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
         adView.loadAd(adRequest)
     }
 
-    fun deleteData(){
+    fun deleteData() {
         data.clear()
         notifyDataSetChanged()
     }

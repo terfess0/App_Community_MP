@@ -1,13 +1,24 @@
 package com.terfess.comunidadmp.classes
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class Utilities {
     private val db = FirebaseFirestore.getInstance()
@@ -172,4 +183,49 @@ class Utilities {
         builder.create()
         builder.show()
     }
+
+    fun getCurrentTime(): String {
+        val formato = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val fechaActual = Date()
+        return formato.format(fechaActual)
+    }
+
+    fun hideKeyboard(context: Context, editTextBody: EditText) {
+        val imm =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(editTextBody.windowToken, 0)
+    }
+
+    fun isValidLink(link: String): Boolean {
+        // Patrón estricto para validar enlaces
+        val urlPattern = "^(https?://)([\\w-]+\\.)+[\\w-]{2,}(\\/[\\w-./?%&=]*)?$".toRegex()
+        return link.trim().isNotEmpty() && urlPattern.matches(link)
+    }
+
+    fun copyText(textCopy: String, context: Context) {
+        // Obtener el servicio de portapapeles
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        // Crear un ClipData con el texto a copiar
+        val clip = ClipData.newPlainText("Texto copiado", textCopy)
+
+        // Copiar al portapapeles
+        clipboard.setPrimaryClip(clip)
+
+        // Mostrar un mensaje al usuario (opcional)
+        Toast.makeText(context, "Texto copiado al portapapeles", Toast.LENGTH_SHORT).show()
+    }
+
+    fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val services = activityManager.getRunningServices(Int.MAX_VALUE)
+
+        for (service in services) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
 }

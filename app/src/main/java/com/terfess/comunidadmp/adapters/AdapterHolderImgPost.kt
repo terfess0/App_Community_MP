@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.terfess.comunidadmp.R
 import android.view.View
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.terfess.comunidadmp.databinding.LayoutImageContPostBinding
 import com.terfess.comunidadmp.model.ImageSelected
 
@@ -36,6 +37,7 @@ class AdapterHolderImgPost(private var dataImages: MutableList<ImageSelected>) :
             Glide.with(itemView.context)
                 .load(image.imageLink)
                 .placeholder(R.drawable.predet_image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding.image)
 
 

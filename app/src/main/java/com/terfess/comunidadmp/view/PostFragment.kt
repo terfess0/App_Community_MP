@@ -37,7 +37,7 @@ class PostFragment : Fragment() {
         val adapter = AdapterHolderViewPostImage(emptyList(), requireContext())
         val recyclerimage = binding.viewPostImages
         recyclerimage.adapter = adapter
-        recyclerimage.layoutManager = LinearLayoutManager(requireContext())
+        recyclerimage.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
 
 
@@ -56,6 +56,8 @@ class PostFragment : Fragment() {
             if (post.imagenPost.isNotEmpty()) {
                 recyclerimage.adapter =
                     AdapterHolderViewPostImage(info[0].imagenPost, requireContext())
+            }else{
+              binding.tvDeslize.visibility = View.GONE
             }
 
 
@@ -92,7 +94,6 @@ class PostFragment : Fragment() {
         })
         binding.btnBack.setOnClickListener {
             findNavController().navigate(R.id.action_postFragment_to_navigation_home)
-            println("Se navegó de postFragment a HomeFragment")
         }
 
         return binding.root

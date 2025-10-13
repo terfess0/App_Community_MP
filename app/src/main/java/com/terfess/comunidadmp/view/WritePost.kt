@@ -74,7 +74,7 @@ class WritePost : Fragment() {
                 val selectedImage: Uri? = uri
                 selectedImage?.let { img ->
 
-                    val idImageSave = getCurrentTime()
+                    val idImageSave = Utilities().getCurrentTime()
                     val imagen = ImageSelected(idImageSave, img)
                     adapterImages.addImage(imagen)
 
@@ -96,7 +96,7 @@ class WritePost : Fragment() {
         editTextBody.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                 // Ocultar el teclado suavemente
-                hideKeyboard(editTextBody)
+                Utilities().hideKeyboard(requireContext(), editTextBody)
             }
             false
         }
@@ -191,15 +191,4 @@ class WritePost : Fragment() {
 
     }
 
-    private fun hideKeyboard(editTextBody: EditText) {
-        val imm =
-            requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(editTextBody.windowToken, 0)
-    }
-
-    fun getCurrentTime(): String {
-        val formato = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val fechaActual = Date()
-        return formato.format(fechaActual)
-    }
 }

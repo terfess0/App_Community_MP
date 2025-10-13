@@ -3,9 +3,9 @@ package com.terfess.comunidadmp.model
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.terfess.comunidadmp.callbacks.GetUserCallback
 import com.terfess.comunidadmp.callbacks.posts.FavoritesFirestore
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
-import com.terfess.comunidadmp.callbacks.GetUserCallback
 
 class FavoritesProvider(private val callback: GetPostCallback) : ViewModel(), GetUserCallback {
     // get firebase reference

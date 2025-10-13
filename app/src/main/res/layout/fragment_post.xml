@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".view.PostFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -60,6 +61,7 @@
                     android:textAlignment="viewStart"
                     android:textAllCaps="true"
                     android:textColor="@color/naranja_enfasis"
+                    android:textIsSelectable="true"
                     android:textSize="22sp"
                     android:textStyle="bold" />
             </RelativeLayout>
@@ -77,7 +79,8 @@
                 <TextView
                     android:id="@+id/viewPostDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true" />
             </LinearLayout>
 
             <LinearLayout
@@ -93,33 +96,34 @@
                 <TextView
                     android:id="@+id/viewPostAutor"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="80dp"
-                android:paddingHorizontal="5dp"
-                app:cardCornerRadius="8dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/viewPostImages"
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/transparente"
-                    android:backgroundTint="@color/transparente" />
-            </androidx.cardview.widget.CardView>
+                    android:textIsSelectable="true" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/viewPostContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autoLink="web"
                 android:layout_marginVertical="5dp"
+                android:autoLink="web"
+                android:textIsSelectable="true"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvDeslize"
+                android:text="@string/desliza_horizontalmente"
+                android:textColor="@color/gris_transparent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/viewPostImages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:background="@color/transparente"
+                android:backgroundTint="@color/transparente"
+                android:padding="5dp" />
 
         </LinearLayout>
     </ScrollView>

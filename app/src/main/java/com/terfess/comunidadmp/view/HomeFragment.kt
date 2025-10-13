@@ -21,6 +21,7 @@ import com.terfess.comunidadmp.classes.UserRole
 import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.databinding.ActivityMainBinding
 import com.terfess.comunidadmp.databinding.FragmentHomeBinding
+import com.terfess.comunidadmp.model.Post
 import com.terfess.comunidadmp.services.FirebaseAuth
 import com.terfess.comunidadmp.viewmodel.PostViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +40,7 @@ class HomeFragment : Fragment() {
     private val postViewModel: PostViewModel by viewModels()
     private var numPosts = 0
 
+    private var listPost = mutableListOf<Post>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -114,46 +116,59 @@ class HomeFragment : Fragment() {
             verifyUserRole()
         })
 
-        postViewModel.numTotalPost.observe(viewLifecycleOwner, Observer {
+        postViewModel.numTotalPost.observe(viewLifecycleOwner) {
             println("Numero de post: $it")
             numPosts = it
             // call to function get posts
             postViewModel.getPosts(null)
-        })
+        }
 
-        postViewModel.postViewModel.observe(this.viewLifecycleOwner, Observer { items ->
-            // Actualiza tu UI con la lista de items
-            print("Valor numPost 1: $numPosts ")
+
+        postViewModel.postViewModel.observe(this.viewLifecycleOwner) { items ->
+            //Verify if the new data already exists
+            val postIdsSet = listPost.map { it.idPost }.toSet()
+            val comp = items.all { it.idPost in postIdsSet }
+
+
+            println("Info:: $comp ----------------------------------------------")
+
+            //If new data not exists add to list
+            if (!comp) {
+                listPost.addAll(items)
+            } else {
+                println("Omitiendo recibir posts home")
+            }
+
+            //Update recycler and pass the number request next pag for request from recycler to viewmodelpost
             numPosts -= 10
-            println("Valor numPost 2: $numPosts")
             if (numPosts != 0) {
                 val numPaginReq = 10
 
                 if (numPosts >= 10) {
-                    adaptador.setData(items, numPaginReq)
+                    adaptador.setData(listPost, numPaginReq)
                 } else {
-                    adaptador.setData(items, numPosts)
+                    adaptador.setData(listPost, numPosts)
                 }
             }
 
-            progressBar.visibility = View.GONE
-
-            // Mostrar o ocultar el texto de "No hay publicaciones" según si la lista está vacía
-            if (items == null) {
-                binding.noPostsText.visibility = View.VISIBLE
-            } else if (items.isEmpty()) {
+            // If new data is empty show "no data text"
+            if (items.isNullOrEmpty()) {
                 binding.noPostsText.visibility = View.VISIBLE
             } else {
                 binding.noPostsText.visibility = View.GONE
             }
 
-            // Cancel swipe anim
-            binding.swiperefresh.isRefreshing = false
-        })
 
-        postViewModel.resultAddFavorite.observe(this@HomeFragment.viewLifecycleOwner, Observer { result ->
-            when (result) {
-                "SUCCESS" -> {
+            // Cancel load elements at end
+            binding.swiperefresh.isRefreshing = false
+            progressBar.visibility = View.GONE
+        }
+
+        postViewModel.resultAddFavorite.observe(
+            this@HomeFragment.viewLifecycleOwner,
+            Observer { result ->
+                when (result) {
+                    "SUCCESS" -> {
 //                    Utilities().showAlert(
 //                        requireContext(),
 //                        "Post guardado",
@@ -164,9 +179,9 @@ class HomeFragment : Fragment() {
 //                        {},
 //                        {}
 //                    )
-                }
+                    }
 
-                "ALREADY_EXISTS" -> {
+                    "ALREADY_EXISTS" -> {
 //                    Utilities().showAlert(
 //                        requireContext(),
 //                        "Post guardado",
@@ -178,18 +193,18 @@ class HomeFragment : Fragment() {
 //                        {}
 //                    )
 
-                }
+                    }
 
-                else -> {
+                    else -> {
 //                    Snackbar.make(
 //                        requireView(),
 //                        "Algo salio mal, no se pudo guardar el favorito",
 //                        Snackbar.LENGTH_SHORT
 //                    ).show()
+                    }
                 }
-            }
 
-        })
+            })
 
         postViewModel.resultDelPost.observe(viewLifecycleOwner, Observer { resultado ->
             if (resultado == "SUCCESS") {
@@ -284,6 +299,10 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        numPosts = 0
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

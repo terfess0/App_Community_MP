@@ -5,11 +5,11 @@
     android:id="@+id/publicacion_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
     android:background="@color/transparente"
     android:backgroundTint="@color/transparente"
     android:foreground="?android:attr/selectableItemBackground"
-    android:padding="2dp">
+    android:paddingHorizontal="2dp"
+    android:layout_marginVertical="2dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/contain_img_profile"
@@ -68,14 +68,14 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/contain_imgP"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="5dp"
         android:layout_marginTop="89dp"
         android:maxHeight="150dp"
         android:minHeight="90dp"
         app:cardCornerRadius="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nickAuthor">
@@ -89,7 +89,7 @@
 
     <TextView
         android:id="@+id/cuerpoP"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:ellipsize="end"
@@ -97,19 +97,19 @@
         android:text="asdasdasdasda"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/contain_btns_actions"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contain_imgP" />
 
 
     <LinearLayout
         android:id="@+id/contain_btns_actions"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="end"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/view2"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cuerpoP">
 
@@ -118,19 +118,31 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="15"
-            android:text="Leer más..."
+            android:text="@string/leer_mas"
             android:textAlignment="center"
-            android:textColor="#5F0086"
+            android:textColor="@color/morado_enfasis"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cuerpoP" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintBottom_toTopOf="@id/view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/datePost">
+
         <ImageButton
             android:id="@+id/btn_save_post"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@color/transparente"
             android:contentDescription="Guardar Post"
@@ -139,8 +151,8 @@
 
         <ImageButton
             android:id="@+id/deletePost"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@color/transparente"
             android:contentDescription="Guardar Post"
@@ -154,23 +166,28 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
-        android:background="@color/morado_enfasis"
+        android:paddingHorizontal="30dp"
+        android:background="@color/gris_shimer"
         app:layout_constraintBottom_toTopOf="@id/adView"
         app:layout_constraintTop_toBottomOf="@+id/contain_btns_actions"
         tools:layout_editor_absoluteX="10dp" />
 
-
-    <!--ID DE ADMOB EJEMPLO: ca-app-pub-3940256099942544/6300978111 -->
-    <!--ID ADMOB VERDADERO: ca-app-pub-8000181315504515/4230558193 -->
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:adUnitId="@string/fake_key_screens_ad"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="362dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

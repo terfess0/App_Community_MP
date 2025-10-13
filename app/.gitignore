@@ -28,6 +28,7 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+src/main/res/values/ads_keys.xml
 
 # Android Profiling
 *.hprof

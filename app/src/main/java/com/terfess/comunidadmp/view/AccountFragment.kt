@@ -195,7 +195,8 @@ class AccountFragment : Fragment() {
                     val imageViewIcon = binding.imageViewFotoPerfil
 
                     uri.let { img ->
-                        imageViewIcon.setImageURI(img) // Muestra la imagen seleccionada en tu ImageView
+                        imageViewIcon.setImageURI(null)
+                        imageViewIcon.setImageURI(img) // Muestra la imagen seleccionada
 
                         // Cargar imagen desde URI y convertirla en Bitmap
                         val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -283,7 +284,6 @@ class AccountFragment : Fragment() {
             viewEdtUserName.visibility = View.VISIBLE
 
             binding.edtNameUser.requestFocus()
-
         }
 
 

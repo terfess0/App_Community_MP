@@ -5,13 +5,13 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentSnapshot
+import com.terfess.comunidadmp.callbacks.GetCountDocs
+import com.terfess.comunidadmp.callbacks.GetUserCallback
 import com.terfess.comunidadmp.callbacks.posts.DeletePost
 import com.terfess.comunidadmp.callbacks.posts.FavoritesFirestore
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
-import com.terfess.comunidadmp.callbacks.GetUserCallback
-import com.terfess.comunidadmp.callbacks.posts.GetCountPosts
 import com.terfess.comunidadmp.callbacks.posts.OnAttachImagesToPost
-import com.terfess.comunidadmp.callbacks.posts.OnSetNewPost
+import com.terfess.comunidadmp.callbacks.posts.OnSetNewMediaPost
 import com.terfess.comunidadmp.callbacks.posts.OnUploadImages
 import com.terfess.comunidadmp.model.ImageSelected
 import com.terfess.comunidadmp.model.Post
@@ -24,10 +24,10 @@ class PostViewModel : ViewModel(),
     GetUserCallback,
     FavoritesFirestore,
     DeletePost,
-    OnSetNewPost,
+    OnSetNewMediaPost,
     OnUploadImages,
     OnAttachImagesToPost,
-    GetCountPosts {
+    GetCountDocs {
 
     val postViewModel = MutableLiveData<List<Post>>()
     val errorGetPost = MutableLiveData<String>()
@@ -75,7 +75,7 @@ class PostViewModel : ViewModel(),
     }
 
     fun getCountPost() {
-        PostRepository().getAllPostCount(this)
+        PostRepository().getAllDocsCount(this, "posts")
     }
 
     override fun AtSucces(count: Int) {

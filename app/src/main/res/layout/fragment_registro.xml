@@ -4,6 +4,7 @@
     android:id="@+id/registro"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:theme="@style/Theme.Login">
 
     <androidx.cardview.widget.CardView

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/Theme.LosSantosSAMP"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     tools:context=".view.FavoritesFragment">
 

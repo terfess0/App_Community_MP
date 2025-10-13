@@ -25,6 +25,11 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_account"
             app:destination="@id/navigation_account" />
+        <action
+            android:id="@+id/action_navigation_home_to_mediaFragment"
+            app:destination="@id/mediaFragment"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -110,12 +115,29 @@
         tools:layout="@layout/fragment_media">
         <action
             android:id="@+id/action_mediaFragment_to_navigation_home"
-            app:destination="@id/navigation_home" />
+            app:destination="@id/navigation_home"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_mediaFragment_to_favoritesFragment"
             app:destination="@id/favoritesFragment" />
         <action
             android:id="@+id/action_mediaFragment_to_navigation_account"
             app:destination="@id/navigation_account" />
+        <action
+            android:id="@+id/action_mediaFragment_to_navigation_login"
+            app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_mediaFragment_to_writeMediaPost"
+            app:destination="@id/writeMediaPost" />
+    </fragment>
+    <fragment
+        android:id="@+id/writeMediaPost"
+        android:name="com.terfess.comunidadmp.view.WriteMediaPost"
+        android:label="fragment_write_media_post"
+        tools:layout="@layout/fragment_write_media_post" >
+        <action
+            android:id="@+id/action_writeMediaPost_to_mediaFragment"
+            app:destination="@id/mediaFragment" />
     </fragment>
 </navigation>

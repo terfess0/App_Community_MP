@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".view.MediaFragment">
 
     <LinearLayout
@@ -50,15 +51,19 @@
                 android:layout_marginTop="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/generalInputLink"
                     android:layout_width="match_parent"
-                    android:textSize="12sp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/pega_link_test" />
+                    android:hint="@string/pega_link_test"
+                    android:textSize="12sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <ImageButton
+                android:id="@+id/generalBtnPlayLink"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:src="@drawable/ic_play_music"
                 android:text="@string/play" />
         </LinearLayout>
 

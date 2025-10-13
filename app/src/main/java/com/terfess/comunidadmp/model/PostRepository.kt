@@ -9,18 +9,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.getField
 import com.google.firebase.storage.FirebaseStorage
+import com.terfess.comunidadmp.callbacks.GetCountDocs
 import com.terfess.comunidadmp.callbacks.posts.DeletePost
 import com.terfess.comunidadmp.callbacks.posts.FavoritesFirestore
-import com.terfess.comunidadmp.callbacks.posts.GetCountPosts
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
 import com.terfess.comunidadmp.callbacks.posts.OnAttachImagesToPost
-import com.terfess.comunidadmp.callbacks.posts.OnSetNewPost
+import com.terfess.comunidadmp.callbacks.posts.OnSetNewMediaPost
 import com.terfess.comunidadmp.callbacks.posts.OnUploadImages
 import com.terfess.comunidadmp.classes.ImageUtils
 import kotlinx.coroutines.CoroutineScope
@@ -31,9 +29,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
 
-class PostRepository : ViewModel() {
+class PostRepository  {
     private val db = FirebaseFirestore.getInstance()
-
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
@@ -268,7 +265,7 @@ class PostRepository : ViewModel() {
     }
 
 
-    fun setNewPost(callback: OnSetNewPost, dataPost: HashMap<String, Any?>) {
+    fun setNewPost(callback: OnSetNewMediaPost, dataPost: HashMap<String, Any?>) {
         // Agregar el nuevo documento a la colección "posts"
 
         db.collection("posts")
@@ -300,9 +297,9 @@ class PostRepository : ViewModel() {
 
     }
 
-    fun getAllPostCount(callback: GetCountPosts) {
+    fun getAllDocsCount(callback: GetCountDocs, collectionName: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            db.collection("posts")
+            db.collection(collectionName)
                 .get()
                 .addOnSuccessListener { documents ->
                     if (documents.isEmpty) {

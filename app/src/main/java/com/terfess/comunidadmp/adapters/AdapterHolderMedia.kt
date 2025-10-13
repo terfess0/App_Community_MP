@@ -3,7 +3,7 @@ package com.terfess.comunidadmp.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
+import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.Firebase
@@ -12,20 +12,23 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.terfess.comunidadmp.R
 import com.terfess.comunidadmp.classes.Roles
 import com.terfess.comunidadmp.classes.UserRole.getCurrentUserRole
+import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.databinding.FormatMediaRecyclerBinding
 import com.terfess.comunidadmp.model.PostMedia
 import com.terfess.comunidadmp.model.UserProvider
-import com.terfess.comunidadmp.view.HomeFragmentDirections
+import com.terfess.comunidadmp.view.MediaFragment
 import com.terfess.comunidadmp.viewmodel.MediaViewModel
 
 class AdapterHolderMedia(
     private var data: MutableList<PostMedia>,
-    private val viewModel: MediaViewModel
+    private val viewModel: MediaViewModel,
+    private val instanceMediaF: MediaFragment
 ) :
     RecyclerView.Adapter<AdapterHolderMedia.HolderMedia>() {
     private val db = FirebaseFirestore.getInstance()
     private val user = Firebase.auth.currentUser
     private var numNextPag = 10
+    private var mediaOnFocus : ImageButton? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolderMedia {
         val itemView =
@@ -38,11 +41,12 @@ class AdapterHolderMedia(
     override fun onBindViewHolder(holder: HolderMedia, position: Int) {
         val currentItem = data[position]
         holder.bind(currentItem)
-//        if (data.size >= 10){
-//            if (position > data.size - 3 && numNextPag > 0){
-//                viewModel.getPosts(numNextPag)
-//            }
-//        }
+
+        if (data.size >= 10) {
+            if (position > data.size - 1 && numNextPag > 0) {
+                viewModel.getMediaPosts(numNextPag)
+            }
+        }
     }
 
     override fun getItemCount() = data.size
@@ -55,6 +59,7 @@ class AdapterHolderMedia(
         private val perfilAutorImg = binding.imgProfileAuthorMedia
         private val datePost = binding.datePostMedia
         private val txtCountLikes = binding.txtCountLikesPMedia
+        private val linkTxt = binding.linkStream
 
 
         fun bind(post: PostMedia) {
@@ -64,18 +69,17 @@ class AdapterHolderMedia(
             cuerpoPost.text = post.cuerpoPostMedia
             datePost.text = post.fechaPostMedia.toString().substring(0, 10)
             txtCountLikes.text = post.likesPostMediaCount
-
-            binding.linkStream.text = post.tituloPostMedia
+            linkTxt.text = post.linkStreamPostMedia
 
             //visibilidad opcion de save post (solo en home, en favorites no)
-            val btn_save_post = binding.btnPlay
-            btn_save_post.visibility = View.VISIBLE
-            btn_save_post.setOnClickListener {
+            val btnLikePost = binding.btnLike
+
+            btnLikePost.setOnClickListener {
                 //al tocar se guarda el post y el boton desaparece
-                btn_save_post.setImageResource(R.drawable.ic_post_saved)
-//                viewModel.addFavorite(user?.email.toString(), post.idPostMedia)
-                btn_save_post.isClickable = false
-                btn_save_post.isEnabled = false
+                btnLikePost.setImageResource(R.drawable.ic_like_heart)
+                viewModel.likeMediaPost(post.idPostMedia)
+                btnLikePost.isClickable = false
+                btnLikePost.isEnabled = false
             }
 
             perfilAutorImg.setImageResource(R.drawable.predet_image)
@@ -105,12 +109,6 @@ class AdapterHolderMedia(
                     }
                 }
 
-            //usuario selecciona clickea publicacion
-            itemView.setOnClickListener {
-                binding.root.findNavController().navigate(
-                    HomeFragmentDirections.actionNavigationHomeToPostFragment(postDocumentId = post.idPostMedia)
-                )
-            }
 
             val rol = getCurrentUserRole()
 
@@ -122,8 +120,23 @@ class AdapterHolderMedia(
 
             //a user with admin role delete post
             binding.deletePostMedia.setOnClickListener {
-//                viewModel.deletePostMediaAdmin(post.idPostMedia)
+                viewModel.deleteMediaPost(post.idPostMedia)
                 UserProvider().setUserCounterPost(post.emailAutorPostMedia, "DEL")
+            }
+
+            binding.btnPlay.setOnClickListener {
+                removeMediaFocus()
+                mediaOnFocus = binding.btnPlay
+
+                instanceMediaF.starPlayer(
+                    post.linkStreamPostMedia,
+                    post.tituloPostMedia,
+                    mediaOnFocus!!
+                )
+            }
+
+            binding.btnCopy.setOnClickListener {
+                Utilities().copyText(binding.linkStream.text.toString(), binding.root.context)
             }
         }
 
@@ -132,14 +145,19 @@ class AdapterHolderMedia(
 
     fun setData(newItems: List<PostMedia>, numNextPaginRequest: Int) {
         numNextPag = numNextPaginRequest
-        val start = data.size
+        data.clear()
         data.addAll(newItems)
-        notifyItemRangeInserted(start, newItems.size)
+        notifyDataSetChanged()
     }
 
     fun deleteData() {
         data.clear()
         notifyDataSetChanged()
     }
+
+    fun removeMediaFocus(){
+        if (mediaOnFocus != null) mediaOnFocus?.setImageResource(R.drawable.ic_play_music)
+    }
+
 }
 
