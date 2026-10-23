@@ -18,7 +18,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.terfess.comunidadmp.R
 import com.terfess.comunidadmp.adapters.AdapterHolderViewPostImage
+import com.terfess.comunidadmp.adapters.CommentAdapter
+import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.databinding.FragmentPostBinding
+import com.terfess.comunidadmp.model.Comment
 import com.terfess.comunidadmp.viewmodel.InfoPostViewModel
 
 class PostFragment : Fragment() {
@@ -36,19 +39,92 @@ class PostFragment : Fragment() {
         val idPost = arguments.postDocumentId
         viewModel.getPostDetails(idPost)
 
-
         val adapter = AdapterHolderViewPostImage(emptyList(), requireContext())
         val recyclerimage = binding.viewPostImages
         recyclerimage.adapter = adapter
         recyclerimage.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
+        // Configurar RecyclerView de Comentarios
+        binding.recyclerComments.layoutManager = LinearLayoutManager(requireContext())
+        viewModel.loadComments(idPost)
 
+        viewModel.commentsList.observe(viewLifecycleOwner) { comments ->
+            if (comments.isNullOrEmpty()) {
+                binding.tvNoComments.visibility = View.VISIBLE
+                binding.recyclerComments.adapter = CommentAdapter(emptyList(), idPost)
+            } else {
+                binding.tvNoComments.visibility = View.GONE
+                binding.recyclerComments.adapter = CommentAdapter(comments, idPost) { pId, cId ->
+                    viewModel.deleteComment(pId, cId)
+                }
+            }
+        }
+
+        viewModel.commentAdded.observe(viewLifecycleOwner) {
+            binding.editCommentText.setText("")
+            viewModel.loadComments(idPost)
+            Snackbar.make(requireView(), "Comentario publicado", Snackbar.LENGTH_SHORT).show()
+        }
+
+        binding.btnSendComment.setOnClickListener {
+            val text = binding.editCommentText.text.toString().trim()
+            if (text.isBlank()) return@setOnClickListener
+
+            val currentUser = Firebase.auth.currentUser
+            if (currentUser == null || currentUser.isAnonymous || currentUser.email.isNullOrBlank()) {
+                Utilities().showAlert(
+                    requireContext(),
+                    "Inicia Sesión",
+                    "Debes iniciar sesión para comentar.",
+                    "Aceptar",
+                    "Cancelar",
+                    false,
+                    {
+                        findNavController().navigate(R.id.action_navigation_home_to_navigation_login)
+                    },
+                    {}
+                )
+                return@setOnClickListener
+            }
+
+            db.collection("users")
+                .whereEqualTo("userEmail", currentUser.email)
+                .get()
+                .addOnSuccessListener { query ->
+                    if (!query.isEmpty && query.documents[0].getBoolean("isBanned") == true) {
+                        val reason = query.documents[0].getString("banReason") ?: ""
+                        Utilities().showAlert(
+                            requireContext(),
+                            "Cuenta Suspendida",
+                            "Tu cuenta está suspendida y no puede comentar.\nMotivo: $reason",
+                            "Entendido",
+                            null,
+                            false,
+                            {},
+                            {}
+                        )
+                        return@addOnSuccessListener
+                    }
+
+                    var userName = Utilities().getRegistSheredPref("userName", requireContext())
+                    if (userName.isNullOrBlank()) {
+                        userName = query.documents.firstOrNull()?.getString("userName") ?: "unknown"
+                    }
+
+                    val newComment = Comment(
+                        userName = userName,
+                        userEmail = currentUser.email ?: "",
+                        commentText = text
+                    )
+                    viewModel.addComment(idPost, newComment)
+                }
+        }
 
         viewModel.postDetails.observe(viewLifecycleOwner) { info ->
             val post = info[0]
             // Actualizar la UI con los datos del post
             binding.viewPostTitle.text = post.tituloPost
-
+            binding.viewPostCategory.text = post.categoriaPost
 
             val cuerpoTxt = binding.viewPostContent
             cuerpoTxt.text = post.cuerpoPost
@@ -59,10 +135,9 @@ class PostFragment : Fragment() {
             if (post.imagenPost.isNotEmpty()) {
                 recyclerimage.adapter =
                     AdapterHolderViewPostImage(info[0].imagenPost, requireContext())
-            }else{
-              binding.tvDeslize.visibility = View.GONE
+            } else {
+                binding.tvDeslize.visibility = View.GONE
             }
-
 
             // Cargar foto de perfil del autor
             db.collection("users")
@@ -79,7 +154,6 @@ class PostFragment : Fragment() {
                         }
                     }
                 }
-
 
             binding.viewPostDate.text = post.fechaPost.toString().substring(0, 10)
 

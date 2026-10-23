@@ -80,6 +80,12 @@ class HomeFragment : Fragment() {
         recicler.adapter = adaptador
         recicler.layoutManager = LinearLayoutManager(requireContext())
 
+        // Filtrado por categoría
+        binding.chipGroupCategories.setOnCheckedStateChangeListener { _, checkedIds ->
+            val checkedId = checkedIds.firstOrNull() ?: R.id.chipAll
+            filterPostsByCategory(checkedId)
+        }
+
         binding.newPublisBtn.setOnClickListener {
             // Verify auth state
             val isAnony = authUtilsInst.sessionIsAnonymously()
@@ -149,6 +155,11 @@ class HomeFragment : Fragment() {
                 } else {
                     adaptador.setData(listPost, numPosts)
                 }
+            }
+
+            val currentChipId = binding.chipGroupCategories.checkedChipId
+            if (currentChipId != View.NO_ID && currentChipId != R.id.chipAll) {
+                filterPostsByCategory(currentChipId)
             }
 
             // If new data is empty show "no data text"
@@ -280,6 +291,19 @@ class HomeFragment : Fragment() {
             delay(1000)
             binding.swiperefresh.isRefreshing = false
         }
+    }
+
+    private fun filterPostsByCategory(checkedId: Int) {
+        val filtered = when (checkedId) {
+            R.id.chipGeneral -> listPost.filter { it.categoriaPost.equals("General", ignoreCase = true) }
+            R.id.chipFacciones -> listPost.filter { it.categoriaPost.contains("Facciones", ignoreCase = true) }
+            R.id.chipRoleplay -> listPost.filter { it.categoriaPost.equals("Roleplay", ignoreCase = true) }
+            R.id.chipGuias -> listPost.filter { it.categoriaPost.contains("Guías", ignoreCase = true) || it.categoriaPost.contains("Guias", ignoreCase = true) }
+            R.id.chipAnuncios -> listPost.filter { it.categoriaPost.equals("Anuncios", ignoreCase = true) }
+            else -> listPost
+        }
+        adaptador.setData(filtered.toMutableList(), 10)
+        adaptador.notifyDataSetChanged()
     }
 
     private fun verifyUserRole() {

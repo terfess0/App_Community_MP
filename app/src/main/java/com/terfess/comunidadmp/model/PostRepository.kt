@@ -12,8 +12,10 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.storage.FirebaseStorage
 import com.terfess.comunidadmp.callbacks.GetCountDocs
+import com.terfess.comunidadmp.callbacks.posts.CommentCallback
 import com.terfess.comunidadmp.callbacks.posts.DeletePost
 import com.terfess.comunidadmp.callbacks.posts.FavoritesFirestore
 import com.terfess.comunidadmp.callbacks.posts.GetPostCallback
@@ -69,6 +71,7 @@ class PostRepository  {
                         val imagenPost = document.get("imagenPost") as? List<String> ?: emptyList()
                         val emailAutorPost = document.getString("emailAutorPost") ?: ""
                         val idPost = document.id
+                        val categoriaPost = document.getString("categoriaPost") ?: "General"
 
                         val post = Post(
                             fechaPost,
@@ -77,7 +80,8 @@ class PostRepository  {
                             cuerpoPost,
                             imagenPost,
                             idPost,
-                            emailAutorPost
+                            emailAutorPost,
+                            categoriaPost
                         )
                         listaPublicaciones.add(post)
                     }
@@ -115,7 +119,7 @@ class PostRepository  {
                         val imagenPost = document.get("imagenPost") as? List<String> ?: emptyList()
                         val emailAutorPost = document.getString("emailAutorPost") ?: ""
                         val id = document.id
-
+                        val categoriaPost = document.getString("categoriaPost") ?: "General"
 
                         val post = listOf(
                             Post(
@@ -125,7 +129,8 @@ class PostRepository  {
                                 cuerpoPost,
                                 imagenPost,
                                 id,
-                                emailAutorPost
+                                emailAutorPost,
+                                categoriaPost
                             )
                         )
                         callback.onGetPosts(post, null)
@@ -321,5 +326,61 @@ class PostRepository  {
                     callback.errorGetCount(errorMessage)
                 }
         }
+    }
+
+    fun loadComments(callback: CommentCallback, postId: String) {
+        db.collection("posts")
+            .document(postId)
+            .collection("comments")
+            .orderBy("fechaComment", Query.Direction.ASCENDING)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val comments = mutableListOf<Comment>()
+                for (doc in querySnapshot.documents) {
+                    val idComment = doc.id
+                    val userName = doc.getString("userName") ?: "unknown"
+                    val userEmail = doc.getString("userEmail") ?: ""
+                    val commentText = doc.getString("commentText") ?: ""
+                    val fechaComment = doc.getDate("fechaComment") ?: ""
+                    comments.add(Comment(idComment, userName, userEmail, commentText, fechaComment))
+                }
+                callback.onCommentsLoaded(comments)
+            }
+            .addOnFailureListener { e ->
+                callback.onError(e.message ?: "Error al cargar comentarios")
+            }
+    }
+
+    fun addComment(callback: CommentCallback, postId: String, comment: Comment) {
+        val commentData = hashMapOf(
+            "userName" to comment.userName,
+            "userEmail" to comment.userEmail,
+            "commentText" to comment.commentText,
+            "fechaComment" to FieldValue.serverTimestamp()
+        )
+        db.collection("posts")
+            .document(postId)
+            .collection("comments")
+            .add(commentData)
+            .addOnSuccessListener {
+                callback.onCommentAdded()
+            }
+            .addOnFailureListener { e ->
+                callback.onError(e.message ?: "Error al agregar comentario")
+            }
+    }
+
+    fun deleteComment(callback: CommentCallback, postId: String, commentId: String) {
+        db.collection("posts")
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+            .delete()
+            .addOnSuccessListener {
+                loadComments(callback, postId)
+            }
+            .addOnFailureListener { e ->
+                callback.onError(e.message ?: "Error al eliminar comentario")
+            }
     }
 }

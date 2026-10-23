@@ -75,6 +75,7 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
             titleTextView.text = post.tituloPost
             cuerpoPost.text = post.cuerpoPost
             datePost.text = post.fechaPost.toString().substring(0, 10)
+            binding.categoryPost.text = post.categoriaPost
 
             //show ad
             val visibil = if (showAd) View.VISIBLE else View.GONE

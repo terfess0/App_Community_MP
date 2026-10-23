@@ -10,5 +10,6 @@ data class Post(
     val cuerpoPost: String,
     val imagenPost: List<String>,
     val idPost: String,
-    val emailAutorPost: String
+    val emailAutorPost: String,
+    val categoriaPost: String = "General"
 )

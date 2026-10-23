@@ -41,6 +41,7 @@ class FavoritesProvider(private val callback: GetPostCallback) : ViewModel(), Ge
                             val imagenPost = documentSnapshot.get("imagenPost") as? List<String> ?: emptyList()
                             val emailAutorPost = documentSnapshot.getString("emailAutorPost") ?: ""
                             val idPost = documentSnapshot.id
+                            val categoriaPost = documentSnapshot.getString("categoriaPost") ?: "General"
 
                             val post = Post(
                                 fechaPost,
@@ -49,7 +50,8 @@ class FavoritesProvider(private val callback: GetPostCallback) : ViewModel(), Ge
                                 cuerpoPost,
                                 imagenPost,
                                 idPost,
-                                emailAutorPost
+                                emailAutorPost,
+                                categoriaPost
                             )
                             listaPublicaciones.add(post)
                         }

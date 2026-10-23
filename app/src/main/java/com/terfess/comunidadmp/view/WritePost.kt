@@ -93,6 +93,11 @@ class WritePost : Fragment() {
         val edtTitulo = binding.editTextTitle
         val editTextBody = binding.editTextBody
 
+        // Configurar selector de categorías
+        val categorias = arrayOf("General", "Facciones & Bandas", "Roleplay", "Guías & Dudas", "Anuncios")
+        val categoryAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categorias)
+        binding.autoCompleteCategory.setAdapter(categoryAdapter)
+
         editTextBody.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                 // Ocultar el teclado suavemente
@@ -110,6 +115,7 @@ class WritePost : Fragment() {
                 val titulo = edtTitulo.text.toString()
                 val cuerpo = editTextBody.text.toString()
                 val emailAutor = user.email
+                val categoria = binding.autoCompleteCategory.text.toString().ifBlank { "General" }
                 var autor = Utilities().getRegistSheredPref("userName", root.context)
 
                 if (titulo.isBlank() || cuerpo.isBlank()) {
@@ -160,7 +166,8 @@ class WritePost : Fragment() {
                                 "autorPost" to autor,
                                 "imagenPost" to refImagen,
                                 "fechaPost" to FieldValue.serverTimestamp(),
-                                "emailAutorPost" to emailAutor
+                                "emailAutorPost" to emailAutor,
+                                "categoriaPost" to categoria
                             )
 
                             postVM.setPost(datosPost)
