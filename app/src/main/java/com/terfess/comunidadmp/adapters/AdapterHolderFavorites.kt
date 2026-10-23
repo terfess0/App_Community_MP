@@ -12,6 +12,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.terfess.comunidadmp.R
 import com.terfess.comunidadmp.databinding.FormatoNewsRecyclerBinding
+import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.model.Post
 import com.terfess.comunidadmp.view.FavoritesFragmentDirections
 import com.terfess.comunidadmp.viewmodel.FavoritesViewModel
@@ -53,7 +54,18 @@ class AdapterHolderFavorites(
             nombreAutor.text = post.autorPost
             titleTextView.text = post.tituloPost
             com.terfess.comunidadmp.classes.MarkdownUtils.renderMarkdown(cuerpoPost, post.cuerpoPost)
-            datePost.text = post.fechaPost.toString().substring(0, 10)
+            datePost.text = Utilities().formatCustomDate(post.fechaPost)
+
+            cuerpoPost.setOnClickListener {
+                binding.root.findNavController().navigate(
+                    FavoritesFragmentDirections.actionFavoritesFragmentToPostFragment(postDocumentId = post.idPost)
+                )
+            }
+            binding.leerMas.setOnClickListener {
+                binding.root.findNavController().navigate(
+                    FavoritesFragmentDirections.actionFavoritesFragmentToPostFragment(postDocumentId = post.idPost)
+                )
+            }
 
             // Visibilidad de la imagen del post
             if (post.imagenPost.isNotEmpty()) {

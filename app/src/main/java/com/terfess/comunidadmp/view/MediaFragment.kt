@@ -49,7 +49,10 @@ class MediaFragment : Fragment() {
     private var numPosts = 0
     private lateinit var authUtilsInst: FirebaseAuth
 
-    private lateinit var controllerFuture: ListenableFuture<MediaController>
+    private var mediaController: MediaController? = null
+    private var controllerFuture: ListenableFuture<MediaController>? = null
+    private var currentPlayButton: ImageButton? = null
+    private var currentStreamUrl: String? = null
     private val utilitiesInstance = Utilities()
 
     object SharedData {
@@ -117,17 +120,11 @@ class MediaFragment : Fragment() {
 
         binding.generalBtnPlayLink.setOnClickListener {
             val d = binding.generalInputLink
-            if (!d.text.isNullOrEmpty()) {
-                if (!utilitiesInstance.isValidLink(d.toString())) {
-                    val f = utilitiesInstance.isServiceRunning(
-                        requireContext(),
-                        AudioService::class.java,
-                    )
-                    if (f) requireContext().stopService(Intent(context, AudioService::class.java))
-
-
+            val url = d.text?.toString()?.trim() ?: ""
+            if (url.isNotEmpty()) {
+                if (utilitiesInstance.isValidLink(url)) {
                     starPlayer(
-                        d.text.toString(),
+                        url,
                         "Link de audio stream",
                         binding.generalBtnPlayLink
                     )
@@ -140,7 +137,6 @@ class MediaFragment : Fragment() {
                 d.error = "Ingresa un link stream"
                 Toast.makeText(requireContext(), "Ingresa un link stream", Toast.LENGTH_SHORT)
                     .show()
-
             }
         }
     }
@@ -225,155 +221,90 @@ class MediaFragment : Fragment() {
         }
     }
 
-    fun starPlayer(link: String, audio: String, btnPlay: ImageButton) {
-        val context = binding.root.context
-        //set playlist radios on the player
-        val mediaItem = generateMediaObj(link, audio)
+    override fun onStart() {
+        super.onStart()
+        if (mediaController == null) {
+            initMediaController()
+        }
+    }
 
-        // Start session token on Service
-        val sessionToken =
-            SessionToken(context, ComponentName(context, AudioService::class.java))
-
-        controllerFuture =
-            MediaController.Builder(context, sessionToken).buildAsync()
-
-
-        controllerFuture.addListener({
-
-            val mediaController = controllerFuture.get()
-
-            mediaController.setMediaItem(mediaItem)
-
-            mediaController.prepare()
-            mediaController.play()
-
-//            btnPlay.setOnClickListener {
-//                //hide errorAlert
-//                binding.errorAlert.visibility = View.GONE
-
-            if (mediaController.isPlaying) {
-                mediaController.pause()
-            } else {
-                mediaController.prepare()
-                mediaController.play()
-
-//                    loadProgress.visibility = View.VISIBLE
-//                    btnPlay.visibility = View.GONE
-
-//                    if (mediaController.isPlaying) {
-//                        loadProgress.visibility = View.GONE
-//                        btnPlay.visibility = View.VISIBLE
-//                    }
+    private fun initMediaController() {
+        val ctx = context ?: return
+        val sessionToken = SessionToken(ctx, ComponentName(ctx, AudioService::class.java))
+        val future = MediaController.Builder(ctx, sessionToken).buildAsync()
+        controllerFuture = future
+        future.addListener({
+            try {
+                val controller = future.get()
+                mediaController = controller
+                setupPlayerListener(controller)
+                if (controller.isPlaying) {
+                    currentPlayButton?.setImageResource(R.drawable.ic_pause_music)
+                }
+            } catch (e: Exception) {
+                Log.e("MediaFragment", "Error initializing MediaController: ${e.message}")
             }
-//            }
-
-//            lyReproductor.visibility = View.VISIBLE
-
-            mediaController.addListener(object : Player.Listener {
-
-
-                override fun onIsPlayingChanged(isPlaying: Boolean) {
-                    if (
-                        mediaController.isPlaying
-                        || mediaController.playWhenReady
-                        || mediaController.isLoading
-                    ) {
-//                        btnPower.visibility = View.VISIBLE
-                    }
-
-
-                    if (isPlaying) {
-                        // Active playback.
-                        btnPlay.setImageResource(R.drawable.ic_pause_music)
-
-                        //hide errorAlert
-//                        binding.errorAlert.visibility = View.GONE
-//
-//                        if (!mediaController.isLoading) loadProgress.visibility = View.GONE
-//
-//                        val mediaData = mediaController.currentMediaItem
-//                        textoDireccional(buildString {
-//                            append(getString(R.string.estas_escuchando))
-//                            append(mediaData?.mediaMetadata?.title)
-//                        })
-
-                        println("Es live: ${mediaController.isCurrentMediaItemLive}")
-
-//                        lyReproductor.visibility = View.VISIBLE
-                    } else {
-                        btnPlay.setImageResource(R.drawable.ic_play_music)
-
-                        mediaController.stop() //stop each time for at reanudar research the station
-                        mediaController.prepare()
-
-//                        if (mediaController.playWhenReady) {
-//                            loadProgress.visibility = View.VISIBLE
-//                            btnPlay.visibility = View.GONE
-//                            textoDireccional(getString(R.string.buscando))
-//                        }
-                    }
-                }
-
-
-                override fun onPlaybackStateChanged(state: Int) {
-                    // Actualiza la visibilidad del estado de carga cuando cambia el estado de reproducción del reproductor
-                    if (state == Player.STATE_READY && mediaController.isPlaying) {
-                        // El reproductor está listo para reproducir pero aún no ha comenzado
-                        btnPlay.visibility = View.VISIBLE
-//                        binding.cargando.visibility = View.GONE
-                    }
-
-                    if (state == Player.STATE_ENDED) {
-                        // Verifica si es contenido en vivo y maneja la reproducción
-                        val currentItem = mediaController.currentMediaItem
-                        if (currentItem?.liveConfiguration != null) {
-                            mediaController.seekToDefaultPosition()
-                            mediaController.playWhenReady = true
-                        }
-                        println("Estate ended evitar next")
-                    }
-
-                }
-
-                //on player error signal
-                override fun onPlayerError(error: PlaybackException) {
-                    // Imprime el error para depuración
-                    println("AudioService :: Error playing radio stream: ${error.message}")
-
-                    when (error.errorCode) {
-                        PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED -> {
-//                            val errorMessage = getString(R.string.error_time_over)
-//                            radioError(errorMessage)
-                            mediaController.pause()
-//
-//                            val text = getString(R.string.baseTextDireccional)
-//                            textoDireccional(text)
-                        }
-
-                        PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED -> {
-                            val media = mediaController.currentMediaItem
-                            val nameRadio = media?.mediaMetadata?.title
-//                            val errorMessage = getString(R.string.error_source_station, nameRadio)
-//                            radioError(errorMessage)
-                            mediaController.pause()
-
-//                            val text = getString(R.string.baseTextDireccional)
-//                            textoDireccional(text)
-                        }
-
-                        else -> {
-//                            val errorMessage = getString(R.string.error_base)
-//                            radioError(errorMessage)
-                            mediaController.playWhenReady = true
-                            mediaController.play()
-                        }
-                    }
-                }
-
-            })
-
-            // MediaController is available here with controllerFuture.get()
         }, MoreExecutors.directExecutor())
+    }
+
+    private fun setupPlayerListener(controller: MediaController) {
+        controller.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                currentPlayButton?.setImageResource(
+                    if (isPlaying) R.drawable.ic_pause_music else R.drawable.ic_play_music
+                )
+            }
+
+            override fun onPlaybackStateChanged(state: Int) {
+                if (state == Player.STATE_READY) {
+                    currentPlayButton?.setImageResource(
+                        if (controller.isPlaying) R.drawable.ic_pause_music else R.drawable.ic_play_music
+                    )
+                } else if (state == Player.STATE_ENDED) {
+                    currentPlayButton?.setImageResource(R.drawable.ic_play_music)
+                }
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                Log.e("MediaFragment", "Player error: ${error.message}")
+                currentPlayButton?.setImageResource(R.drawable.ic_play_music)
+                Toast.makeText(context, "Error al reproducir stream: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    fun starPlayer(link: String, audio: String, btnPlay: ImageButton) {
+        val controller = mediaController
+        if (controller == null) {
+            currentStreamUrl = link
+            currentPlayButton = btnPlay
+            initMediaController()
+            return
+        }
+
+        val currentUri = controller.currentMediaItem?.localConfiguration?.uri?.toString()
+        if (currentUri == link) {
+            if (controller.isPlaying) {
+                controller.pause()
+                btnPlay.setImageResource(R.drawable.ic_play_music)
+            } else {
+                controller.play()
+                btnPlay.setImageResource(R.drawable.ic_pause_music)
+            }
+            currentPlayButton = btnPlay
+            return
+        }
+
+        // Switching stream
+        currentPlayButton?.setImageResource(R.drawable.ic_play_music)
+        currentPlayButton = btnPlay
+        currentStreamUrl = link
+
+        val mediaItem = generateMediaObj(link, audio)
+        controller.setMediaItem(mediaItem)
+        controller.prepare()
+        controller.play()
+        btnPlay.setImageResource(R.drawable.ic_pause_music)
     }
 
     @OptIn(UnstableApi::class)
@@ -388,9 +319,9 @@ class MediaFragment : Fragment() {
             )
             .setLiveConfiguration(
                 MediaItem.LiveConfiguration.Builder()
-                    .setTargetOffsetMs(C.TIME_UNSET)  // Usa el valor predeterminado de ExoPlayer
-                    .setMinPlaybackSpeed(0.95f)      // Configura la velocidad mínima de reproducción
-                    .setMaxPlaybackSpeed(1.05f)      // Configura la velocidad máxima de reproducción
+                    .setTargetOffsetMs(C.TIME_UNSET)
+                    .setMinPlaybackSpeed(0.95f)
+                    .setMaxPlaybackSpeed(1.05f)
                     .build()
             )
             .build()
@@ -398,8 +329,19 @@ class MediaFragment : Fragment() {
     }
 
     private fun closeService() {
+        controllerFuture?.let { MediaController.releaseFuture(it) }
+        mediaController = null
+        currentPlayButton?.setImageResource(R.drawable.ic_play_music)
+    }
 
-        controllerFuture.get().release()
-//        stopService(Intent(this, AudioService::class.java))
+    override fun onDestroyView() {
+        super.onDestroyView()
+        controllerFuture?.let {
+            MediaController.releaseFuture(it)
+        }
+        controllerFuture = null
+        mediaController = null
+        currentPlayButton = null
+        _binding = null
     }
 }

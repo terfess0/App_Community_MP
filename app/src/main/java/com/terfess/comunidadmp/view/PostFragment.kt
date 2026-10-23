@@ -168,7 +168,7 @@ class PostFragment : Fragment() {
                     }
                 }
 
-            binding.viewPostDate.text = post.fechaPost.toString().substring(0, 10)
+            binding.viewPostDate.text = Utilities().formatCustomDate(post.fechaPost)
 
             binding.btnReportPostDetail.setOnClickListener {
                 val reasons = arrayOf(

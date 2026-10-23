@@ -57,7 +57,6 @@ class WritePost : Fragment() {
 
 
         val buttonSelectImage = binding.btnSelectImgPost
-        var refImagen = ""
         val btnPublicar = binding.btnSendPublish
         val progresIc = binding.progressPost
 
@@ -164,7 +163,7 @@ class WritePost : Fragment() {
                                 "tituloPost" to titulo,
                                 "cuerpoPost" to cuerpo,
                                 "autorPost" to autor,
-                                "imagenPost" to refImagen,
+                                "imagenPost" to emptyList<String>(),
                                 "fechaPost" to FieldValue.serverTimestamp(),
                                 "emailAutorPost" to emailAutor,
                                 "categoriaPost" to categoria
@@ -187,36 +186,40 @@ class WritePost : Fragment() {
             }
         }
 
-        postVM.resultSetPost.observe(viewLifecycleOwner, Observer {
-            // Limpiar los EditText después de agregar los datos
+        fun onPostFinished() {
             edtTitulo.setText("")
             editTextBody.setText("")
             btnPublicar.visibility = View.VISIBLE
             progresIc.visibility = View.GONE
 
-            postVM.uploadImagesPost(imagenes, requireActivity())
-            //update num post user
             UserProvider().setUserCounterPost(user?.email.toString(), "ADD")
+            Toast.makeText(root.context, "Publicación creada con éxito", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_writePost_to_navigation_home)
+        }
 
-            //exit to home
-            Snackbar.make(root, "Post Enviado", Snackbar.LENGTH_SHORT)
-                .show()
-            findNavController().navigate(R.id.navigation_home)
-            findNavController().popBackStack(R.id.navigation_home, false)
+        postVM.resultSetPost.observe(viewLifecycleOwner, Observer {
+            if (imagenes.isNotEmpty()) {
+                postVM.uploadImagesPost(imagenes, requireActivity())
+            } else {
+                onPostFinished()
+            }
         })
 
-        postVM.errorSetPost.observe(viewLifecycleOwner, Observer {
+        postVM.postCreationComplete.observe(viewLifecycleOwner) { completed ->
+            if (completed == true) {
+                onPostFinished()
+            }
+        }
+
+        postVM.errorSetPost.observe(viewLifecycleOwner, Observer { error ->
             btnPublicar.visibility = View.VISIBLE
             progresIc.visibility = View.GONE
 
             Toast.makeText(
                 root.context,
-                "Algo salio mal, prueba más tarde",
+                "Error al publicar ($error). Intenta de nuevo.",
                 Toast.LENGTH_SHORT
             ).show()
-            println("Algo salio mal al subir post: $it")
-            findNavController().navigate(R.id.navigation_home)
-            findNavController().popBackStack(R.id.navigation_home, false)
         })
 
         binding.btnBack.setOnClickListener {

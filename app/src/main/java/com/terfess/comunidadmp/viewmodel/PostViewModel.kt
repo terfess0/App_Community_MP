@@ -38,22 +38,41 @@ class PostViewModel : ViewModel(),
     val errorSetPost = MutableLiveData<String>()
 
     val numTotalPost = MutableLiveData<Int>()
-
-    val currentLastDoc = MutableLiveData<DocumentSnapshot>()
+    val currentLastDoc = MutableLiveData<DocumentSnapshot?>()
+    val allLoadedPosts = mutableListOf<Post>()
+    var isInitialLoaded = false
+    val hasNewPostsAvailable = MutableLiveData<Boolean>(false)
+    var lastKnownServerTotal = 0
+    val postCreationComplete = MutableLiveData<Boolean>()
+    private var isRefreshing = false
 
     fun getPosts(limit: Int?) {
-        println("CurrentLastDoc: ${currentLastDoc.value}")
-        PostRepository().loadPosts(this, currentLastDoc.value, limit ?: 10)
-        Log.i("VMPost", "Posts han sido solicitados desde viewmodel")
+        val lastDoc = if (isRefreshing) null else currentLastDoc.value
+        Log.i("VMPost", "getPosts called, currentLastDoc: $lastDoc")
+        PostRepository().loadPosts(this, lastDoc, limit ?: 10)
+    }
+
+    fun refreshAllPosts() {
+        isRefreshing = true
+        currentLastDoc.value = null
+        allLoadedPosts.clear()
+        isInitialLoaded = false
+        hasNewPostsAvailable.postValue(false)
+        getCountPost()
+        getPosts(10)
     }
 
     override fun onGetPosts(posts: List<Post>, lastDoc: DocumentSnapshot?) {
-        postViewModel.postValue(posts)
-
+        isRefreshing = false
         if (lastDoc != null) {
-            currentLastDoc.postValue(lastDoc!!)
+            currentLastDoc.postValue(lastDoc)
         }
-        Log.i("VMPost", "Posts obtenidos en viewmodel")
+        val existingIds = allLoadedPosts.map { it.idPost }.toSet()
+        val uniqueNew = posts.filter { it.idPost !in existingIds }
+        allLoadedPosts.addAll(uniqueNew)
+        isInitialLoaded = true
+        postViewModel.postValue(allLoadedPosts.toList())
+        Log.i("VMPost", "Posts obtenidos en viewmodel, total acumulados: ${allLoadedPosts.size}")
     }
 
     override fun onError(error: String) {
@@ -79,6 +98,10 @@ class PostViewModel : ViewModel(),
     }
 
     override fun AtSucces(count: Int) {
+        if (isInitialLoaded && lastKnownServerTotal > 0 && count > lastKnownServerTotal) {
+            hasNewPostsAvailable.postValue(true)
+        }
+        lastKnownServerTotal = count
         numTotalPost.postValue(count)
     }
 
@@ -153,7 +176,8 @@ class PostViewModel : ViewModel(),
     }
 
     override fun onAttachImagesSuccess() {
-        println("SUCCESS POST")
+        postCreationComplete.postValue(true)
+        Log.i("VMPost", "Imágenes adjuntadas correctamente al post")
     }
 
     override fun onAttachImgsError() {

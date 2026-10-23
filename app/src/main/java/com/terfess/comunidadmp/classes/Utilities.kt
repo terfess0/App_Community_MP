@@ -228,4 +228,43 @@ class Utilities {
         return false
     }
 
+    fun formatCustomDate(rawDate: Any?): String {
+        if (rawDate == null) return "00/00/0000"
+        val targetFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        return try {
+            when (rawDate) {
+                is com.google.firebase.Timestamp -> targetFormat.format(rawDate.toDate())
+                is Date -> targetFormat.format(rawDate)
+                is Long -> targetFormat.format(Date(rawDate))
+                is String -> {
+                    val str = rawDate.trim()
+                    if (str.matches(Regex("\\d{2}/\\d{2}/\\d{4}"))) return str
+                    val formats = listOf(
+                        "yyyy-MM-dd",
+                        "yyyy-MM-dd HH:mm:ss",
+                        "EEE MMM dd HH:mm:ss zzz yyyy",
+                        "EEE MMM dd HH:mm:ss yyyy"
+                    )
+                    for (fmt in formats) {
+                        try {
+                            val parsed = SimpleDateFormat(fmt, Locale.US).parse(str)
+                            if (parsed != null) return targetFormat.format(parsed)
+                        } catch (_: Exception) {}
+                    }
+                    if (str.length >= 10 && str[4] == '-' && str[7] == '-') {
+                        val y = str.substring(0, 4)
+                        val m = str.substring(5, 7)
+                        val d = str.substring(8, 10)
+                        return "$d/$m/$y"
+                    }
+                    str
+                }
+                else -> rawDate.toString()
+            }
+        } catch (e: Exception) {
+            "00/00/0000"
+        }
+    }
+
 }

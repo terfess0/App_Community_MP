@@ -68,7 +68,7 @@ class AdapterHolderMedia(
             nombreAutor.text = post.autorPostMedia
             titleTextView.text = post.tituloPostMedia
             cuerpoPost.text = post.cuerpoPostMedia
-            datePost.text = post.fechaPostMedia.toString().substring(0, 10)
+            datePost.text = Utilities().formatCustomDate(post.fechaPostMedia)
             txtCountLikes.text = post.likesPostMediaCount
             linkTxt.text = post.linkStreamPostMedia
 

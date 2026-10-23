@@ -1,16 +1,14 @@
 package com.terfess.comunidadmp.view
 
 import android.os.Bundle
-import android.renderscript.Script.FieldBase
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -19,15 +17,10 @@ import com.terfess.comunidadmp.adapters.AdapterHolderHome
 import com.terfess.comunidadmp.classes.Roles
 import com.terfess.comunidadmp.classes.UserRole
 import com.terfess.comunidadmp.classes.Utilities
-import com.terfess.comunidadmp.databinding.ActivityMainBinding
 import com.terfess.comunidadmp.databinding.FragmentHomeBinding
 import com.terfess.comunidadmp.model.Post
 import com.terfess.comunidadmp.services.FirebaseAuth
 import com.terfess.comunidadmp.viewmodel.PostViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -37,7 +30,7 @@ class HomeFragment : Fragment() {
     private lateinit var adaptador: AdapterHolderHome
     private lateinit var authUtilsInst: FirebaseAuth
 
-    private val postViewModel: PostViewModel by viewModels()
+    private val postViewModel: PostViewModel by activityViewModels()
     private var numPosts = 0
 
     private var listPost = mutableListOf<Post>()
@@ -53,12 +46,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        // call to function get num posts Firestore
-        postViewModel.getCountPost()
-
-        // call to function for get user info
-        postViewModel.getUserAccount()
-
         authUtilsInst = FirebaseAuth()
 
         // Obtener el estado de login desde SharedPreferences
@@ -67,14 +54,11 @@ class HomeFragment : Fragment() {
         // Si no esta logeado entonces logear como anonimo
         if (loginState != "true" && loginState != "partial") {
             authUtilsInst.loginAnonymously()
-
-            // Save state login anonymously
             Utilities().saveSharedpref(requireContext(), "LoginState", "partial")
         }
 
         val progressBar = binding.progressShimer
         val recicler = binding.contenido
-
 
         adaptador = AdapterHolderHome(mutableListOf(), postViewModel)
         recicler.adapter = adaptador
@@ -84,6 +68,39 @@ class HomeFragment : Fragment() {
         binding.chipGroupCategories.setOnCheckedStateChangeListener { _, checkedIds ->
             val checkedId = checkedIds.firstOrNull() ?: R.id.chipAll
             filterPostsByCategory(checkedId)
+        }
+
+        // Si ya hay posts cargados en el ViewModel, mostrarlos sin re-activar shimmer
+        if (postViewModel.isInitialLoaded && postViewModel.allLoadedPosts.isNotEmpty()) {
+            progressBar.visibility = View.GONE
+            listPost = postViewModel.allLoadedPosts.toMutableList()
+            val currentChipId = binding.chipGroupCategories.checkedChipId
+            if (currentChipId != View.NO_ID && currentChipId != R.id.chipAll) {
+                filterPostsByCategory(currentChipId)
+            } else {
+                adaptador.setData(listPost, 10)
+            }
+            binding.noPostsText.visibility = View.GONE
+        } else {
+            progressBar.visibility = View.VISIBLE
+        }
+
+        // Obtener conteo y verificar si hay nuevos posts en segundo plano
+        postViewModel.getCountPost()
+
+        // Obtener datos del usuario
+        postViewModel.getUserAccount()
+
+        // Banner de nuevos posts disponibles
+        postViewModel.hasNewPostsAvailable.observe(viewLifecycleOwner) { hasNew ->
+            binding.tvNewPostsAvailable.visibility = if (hasNew) View.VISIBLE else View.GONE
+        }
+
+        binding.tvNewPostsAvailable.setOnClickListener {
+            binding.tvNewPostsAvailable.visibility = View.GONE
+            binding.contenido.smoothScrollToPosition(0)
+            binding.swiperefresh.isRefreshing = true
+            refreshPosts()
         }
 
         binding.newPublisBtn.setOnClickListener {
@@ -105,7 +122,6 @@ class HomeFragment : Fragment() {
             } else {
                 findNavController().navigate(R.id.action_navigation_home_to_writePost)
             }
-
         }
 
         // Listener at swipe to refresh
@@ -116,61 +132,36 @@ class HomeFragment : Fragment() {
         //-------------------OBSERVERS
 
         postViewModel.dataUser.observe(viewLifecycleOwner, Observer {
-            //save userRole un shared preferences local
             Utilities().saveSharedpref(requireContext(), "userRole", it.userRole)
-            //verify user role local
             verifyUserRole()
         })
 
-        postViewModel.numTotalPost.observe(viewLifecycleOwner) {
-            println("Numero de post: $it")
-            numPosts = it
-            // call to function get posts
-            postViewModel.getPosts(null)
+        postViewModel.numTotalPost.observe(viewLifecycleOwner) { total ->
+            numPosts = total
+            if (!postViewModel.isInitialLoaded) {
+                progressBar.visibility = View.VISIBLE
+                postViewModel.getPosts(10)
+            }
         }
 
-
-        postViewModel.postViewModel.observe(this.viewLifecycleOwner) { items ->
-            //Verify if the new data already exists
-            val postIdsSet = listPost.map { it.idPost }.toSet()
-            val comp = items.all { it.idPost in postIdsSet }
-
-
-            println("Info:: $comp ----------------------------------------------")
-
-            //If new data not exists add to list
-            if (!comp) {
-                listPost.addAll(items)
-            } else {
-                println("Omitiendo recibir posts home")
-            }
-
-            //Update recycler and pass the number request next pag for request from recycler to viewmodelpost
-            numPosts -= 10
-            if (numPosts != 0) {
-                val numPaginReq = 10
-
-                if (numPosts >= 10) {
-                    adaptador.setData(listPost, numPaginReq)
-                } else {
-                    adaptador.setData(listPost, numPosts)
-                }
-            }
+        postViewModel.postViewModel.observe(viewLifecycleOwner) { items ->
+            listPost = items.toMutableList()
 
             val currentChipId = binding.chipGroupCategories.checkedChipId
             if (currentChipId != View.NO_ID && currentChipId != R.id.chipAll) {
                 filterPostsByCategory(currentChipId)
+            } else {
+                val remaining = numPosts - listPost.size
+                val nextPag = if (remaining >= 10) 10 else if (remaining > 0) remaining else 0
+                adaptador.setData(listPost, nextPag)
             }
 
-            // If new data is empty show "no data text"
-            if (items.isNullOrEmpty()) {
+            if (items.isEmpty()) {
                 binding.noPostsText.visibility = View.VISIBLE
             } else {
                 binding.noPostsText.visibility = View.GONE
             }
 
-
-            // Cancel load elements at end
             binding.swiperefresh.isRefreshing = false
             progressBar.visibility = View.GONE
         }
@@ -277,20 +268,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun refreshPosts() {
-        //clean last doc in view model
-        postViewModel.currentLastDoc.postValue(null)
-
-        adaptador.deleteData()
-
-        postViewModel.currentLastDoc.observe(viewLifecycleOwner, Observer {
-            postViewModel.getCountPost()
-        })
-
-        //hide swipe refresh at 1 second
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(1000)
-            binding.swiperefresh.isRefreshing = false
-        }
+        binding.tvNewPostsAvailable.visibility = View.GONE
+        postViewModel.refreshAllPosts()
     }
 
     private fun filterPostsByCategory(checkedId: Int) {
@@ -323,10 +302,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        numPosts = 0
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

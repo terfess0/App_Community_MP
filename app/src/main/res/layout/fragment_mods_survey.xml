@@ -94,7 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1. ¿Te gustaría poder descargar e instalar mods desde la app?"
-                        android:textColor="@color/white"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp" />
@@ -123,7 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="2. ¿Qué tipo de aportes te interesan más?"
-                        android:textColor="@color/white"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp" />
@@ -219,7 +219,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Resultados de la comunidad en tiempo real:"
-                        android:textColor="@color/white"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textSize="13sp"
                         android:layout_marginBottom="8dp" />
 

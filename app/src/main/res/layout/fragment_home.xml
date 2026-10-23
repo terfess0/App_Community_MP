@@ -83,6 +83,28 @@
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
+    <TextView
+        android:id="@+id/tvNewPostsAvailable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/borde_boton"
+        android:backgroundTint="@color/morado_enfasis"
+        android:drawableStart="@drawable/ic_notifications_black_24dp"
+        android:drawablePadding="6dp"
+        android:drawableTint="@color/white"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="7dp"
+        android:text="¡Nuevas publicaciones disponibles! Toca para ver"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:elevation="6dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/scrollCategoryChips"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
@@ -90,10 +112,8 @@
         android:layout_marginHorizontal="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollCategoryChips"
-        app:layout_constraintVertical_bias="1.0"
         app:swipeRefreshLayoutProgressSpinnerBackgroundColor="@color/naranja_enfasis">
 
         <androidx.recyclerview.widget.RecyclerView

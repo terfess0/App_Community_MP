@@ -74,14 +74,93 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
             nombreAutor.text = post.autorPost
             titleTextView.text = post.tituloPost
             com.terfess.comunidadmp.classes.MarkdownUtils.renderMarkdown(cuerpoPost, post.cuerpoPost)
-            datePost.text = post.fechaPost.toString().substring(0, 10)
+            datePost.text = Utilities().formatCustomDate(post.fechaPost)
             binding.categoryPost.text = post.categoriaPost
 
+            // Click en descripción abre el post
+            cuerpoPost.setOnClickListener {
+                binding.root.findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToPostFragment(postDocumentId = post.idPost)
+                )
+            }
+
+            // Click en "Leer más..." abre el post
             binding.leerMas.setOnClickListener {
                 binding.root.findNavController().navigate(
                     HomeFragmentDirections.actionNavigationHomeToPostFragment(postDocumentId = post.idPost)
                 )
             }
+
+            // Click en botón comentarios abre el post
+            binding.layoutCommentBtn.setOnClickListener {
+                binding.root.findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToPostFragment(postDocumentId = post.idPost)
+                )
+            }
+
+            // Contador de comentarios en tiempo real
+            db.collection("posts").document(post.idPost).collection("comments")
+                .get()
+                .addOnSuccessListener { commentsSnapshot ->
+                    binding.tvCommentsCount.text = commentsSnapshot.size().toString()
+                }
+
+            // Reacciones / Likes
+            val likesRef = db.collection("posts").document(post.idPost).collection("likes")
+            val currentUser = Firebase.auth.currentUser
+            var userHasLiked = false
+
+            likesRef.get().addOnSuccessListener { snapshot ->
+                binding.tvLikesCount.text = snapshot.size().toString()
+                if (currentUser != null && !currentUser.isAnonymous) {
+                    userHasLiked = snapshot.documents.any { it.id == currentUser.uid }
+                    binding.btnLikePost.setImageResource(
+                        if (userHasLiked) R.drawable.ic_like_heart else R.drawable.ic_like_heart_outlined
+                    )
+                } else {
+                    binding.btnLikePost.setImageResource(R.drawable.ic_like_heart_outlined)
+                }
+            }
+
+            val onLikeClickListener = View.OnClickListener {
+                if (currentUser == null || currentUser.isAnonymous || currentUser.email.isNullOrBlank()) {
+                    Utilities().showAlert(
+                        itemView.context,
+                        "Inicia Sesión",
+                        "Para reaccionar a las publicaciones debes iniciar sesión.",
+                        "Iniciar sesión",
+                        "Cancelar",
+                        false,
+                        {
+                            binding.root.findNavController().navigate(R.id.action_navigation_home_to_navigation_login)
+                        },
+                        {}
+                    )
+                    return@OnClickListener
+                }
+
+                val currentLikes = binding.tvLikesCount.text.toString().toIntOrNull() ?: 0
+                if (userHasLiked) {
+                    // Quitar Like
+                    userHasLiked = false
+                    binding.btnLikePost.setImageResource(R.drawable.ic_like_heart_outlined)
+                    binding.tvLikesCount.text = (currentLikes - 1).coerceAtLeast(0).toString()
+                    likesRef.document(currentUser.uid).delete()
+                } else {
+                    // Dar Like
+                    userHasLiked = true
+                    binding.btnLikePost.setImageResource(R.drawable.ic_like_heart)
+                    binding.tvLikesCount.text = (currentLikes + 1).toString()
+                    val likeData = hashMapOf(
+                        "userEmail" to currentUser.email,
+                        "date" to com.google.firebase.Timestamp.now()
+                    )
+                    likesRef.document(currentUser.uid).set(likeData)
+                }
+            }
+
+            binding.layoutLikeBtn.setOnClickListener(onLikeClickListener)
+            binding.btnLikePost.setOnClickListener(onLikeClickListener)
 
             //show ad
             val visibil = if (showAd) View.VISIBLE else View.GONE
@@ -104,8 +183,8 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
             val btn_save_post = binding.btnSavePost
             btn_save_post.visibility = View.VISIBLE
             btn_save_post.setOnClickListener {
-                val currentUser = Firebase.auth.currentUser
-                if (currentUser == null || currentUser.isAnonymous || currentUser.email.isNullOrBlank()) {
+                val currentAuth = Firebase.auth.currentUser
+                if (currentAuth == null || currentAuth.isAnonymous || currentAuth.email.isNullOrBlank()) {
                     Utilities().showAlert(
                         itemView.context,
                         "Inicia Sesión",
@@ -120,7 +199,7 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
                     )
                 } else {
                     btn_save_post.setImageResource(R.drawable.ic_post_saved)
-                    viewModel.addFavorite(currentUser.email.toString(), post.idPost)
+                    viewModel.addFavorite(currentAuth.email.toString(), post.idPost)
                     btn_save_post.isClickable = false
                     btn_save_post.isEnabled = false
                 }

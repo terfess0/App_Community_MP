@@ -147,10 +147,75 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <!-- Botón Like / Me Gusta -->
+            <LinearLayout
+                android:id="@+id/layout_like_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp">
+
+                <ImageButton
+                    android:id="@+id/btn_like_post"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:background="@color/transparente"
+                    android:contentDescription="Reaccionar Me Gusta"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_like_heart_outlined" />
+
+                <TextView
+                    android:id="@+id/tv_likes_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="0"
+                    android:textColor="@color/gris_shimer"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Botón Comentarios con Contador -->
+            <LinearLayout
+                android:id="@+id/layout_comment_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp">
+
+                <ImageView
+                    android:id="@+id/btn_comment_post"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Ver comentarios"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_comment" />
+
+                <TextView
+                    android:id="@+id/tv_comments_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="0"
+                    android:textColor="@color/gris_shimer"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
             <ImageButton
                 android:id="@+id/btn_save_post"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:layout_marginStart="6dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Guardar Post"
                 android:padding="6dp"
@@ -161,7 +226,7 @@
                 android:id="@+id/btn_report_post"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Reportar Publicación"
                 android:padding="6dp"
@@ -172,7 +237,7 @@
                 android:id="@+id/deletePost"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Eliminar Post"
                 android:padding="6dp"
