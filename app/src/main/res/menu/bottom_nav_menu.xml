@@ -17,6 +17,11 @@
         android:title="@string/multimedia" />
 
     <item
+        android:id="@+id/modsSurveyFragment"
+        android:icon="@drawable/ic_mods"
+        android:title="@string/title_mods" />
+
+    <item
         android:id="@+id/navigation_account"
         android:icon="@drawable/ic_account_nav"
         android:title="@string/title_account" />

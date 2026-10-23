@@ -143,4 +143,13 @@
             android:id="@+id/action_writeMediaPost_to_mediaFragment"
             app:destination="@id/mediaFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/modsSurveyFragment"
+        android:name="com.terfess.comunidadmp.view.ModsSurveyFragment"
+        android:label="@string/title_mods"
+        tools:layout="@layout/fragment_mods_survey">
+        <action
+            android:id="@+id/action_modsSurveyFragment_to_navigation_login"
+            app:destination="@id/navigation_login" />
+    </fragment>
 </navigation>

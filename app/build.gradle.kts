@@ -73,6 +73,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+
+    //onesignal
+    implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
 
     //glide fotos
     implementation("com.github.bumptech.glide:glide:4.16.0")

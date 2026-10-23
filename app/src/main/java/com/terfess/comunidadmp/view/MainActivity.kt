@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         // Escuchar cambios en el destino de navegación
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_home, R.id.favoritesFragment, R.id.navigation_account, R.id.mediaFragment -> {
+                R.id.navigation_home, R.id.favoritesFragment, R.id.navigation_account, R.id.mediaFragment, R.id.modsSurveyFragment -> {
                     navView.visibility = View.VISIBLE
                 }
 
