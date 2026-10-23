@@ -46,9 +46,11 @@ class UserProvider : ViewModel() {
                     val photo = data.getString("userPhoto") ?: ""
                     val role = data.getString("userRole") ?: ""
                     val favorites = data.get("userFavorites") as? List<String> ?: emptyList()
+                    val isBanned = data.getBoolean("isBanned") ?: false
+                    val banReason = data.getString("banReason") ?: ""
 
                     //collect data
-                    userData = User(name, numPosts, email, joinDate, photo, role, favorites)
+                    userData = User(name, numPosts, email, joinDate, photo, role, favorites, isBanned, banReason)
 
                     // Logging user data
                     Log.i(

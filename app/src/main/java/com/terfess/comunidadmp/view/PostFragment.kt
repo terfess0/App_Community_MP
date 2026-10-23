@@ -11,8 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.terfess.comunidadmp.R
 import com.terfess.comunidadmp.adapters.AdapterHolderViewPostImage
 import com.terfess.comunidadmp.databinding.FragmentPostBinding
@@ -80,7 +83,52 @@ class PostFragment : Fragment() {
 
             binding.viewPostDate.text = post.fechaPost.toString().substring(0, 10)
 
+            binding.btnReportPostDetail.setOnClickListener {
+                val reasons = arrayOf(
+                    "Spam o publicidad no deseada",
+                    "Contenido ofensivo o lenguaje inapropiado",
+                    "Aporte malicioso / Stealer / Mod con crash",
+                    "Acoso o difamación",
+                    "Otro motivo"
+                )
 
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Reportar publicación")
+                    .setItems(reasons) { dialog, which ->
+                        val selectedReason = reasons[which]
+                        val currentUser = Firebase.auth.currentUser
+                        val reportData = hashMapOf(
+                            "idPost" to idPost,
+                            "postTitle" to post.tituloPost,
+                            "reportedAuthorEmail" to post.emailAutorPost,
+                            "reporterEmail" to (currentUser?.email ?: "guest"),
+                            "reason" to selectedReason,
+                            "date" to com.google.firebase.Timestamp.now()
+                        )
+
+                        db.collection("reports")
+                            .add(reportData)
+                            .addOnSuccessListener {
+                                Snackbar.make(
+                                    requireView(),
+                                    "Gracias por tu reporte. Nuestro equipo de moderación lo revisará.",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                            .addOnFailureListener {
+                                Snackbar.make(
+                                    requireView(),
+                                    "Error al enviar reporte. Inténtalo más tarde.",
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                            }
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
         }
 
         viewModel.errorGetPost.observe(viewLifecycleOwner, Observer {

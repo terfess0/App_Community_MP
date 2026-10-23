@@ -9,5 +9,7 @@ data class User(
     val userJoinDate: Serializable,
     val userPhoto: String,
     val userRole: String,
-    val userFavorites: List<String>?
+    val userFavorites: List<String>?,
+    val isBanned: Boolean = false,
+    val banReason: String = ""
 )

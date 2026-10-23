@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.terfess.comunidadmp.R
 import com.terfess.comunidadmp.classes.Utilities
@@ -87,18 +88,51 @@ class WriteMediaPost : Fragment() {
 
                 if (autor.isNullOrBlank()) autor = "unknown"
 
-                // Crear un nuevo mapa con los datos a guardar
-                val datosPost: HashMap<String, Any?> = hashMapOf(
-                    "autorPostMedia" to autor,
-                    "cuerpoPostMedia" to cuerpo,
-                    "tituloPostMedia" to titulo,
-                    "linkStreamPostMedia" to link,
-                    "fechaPostMedia" to FieldValue.serverTimestamp(),
-                    "emailAutorPostMedia" to emailAutor,
-                    "likesPostMediaCount" to "0"
-                )
+                val db = FirebaseFirestore.getInstance()
+                db.collection("users")
+                    .whereEqualTo("userEmail", emailAutor)
+                    .get()
+                    .addOnSuccessListener { query ->
+                        if (!query.isEmpty && query.documents[0].getBoolean("isBanned") == true) {
+                            btnPublicar.visibility = View.VISIBLE
+                            progresIc.visibility = View.GONE
+                            val reason = query.documents[0].getString("banReason") ?: ""
+                            val msg = if (reason.isNotBlank()) {
+                                "Tu cuenta está suspendida.\nMotivo: $reason"
+                            } else {
+                                "Tu cuenta está suspendida por infracción a las normas."
+                            }
+                            Utilities().showAlert(
+                                binding.root.context,
+                                "Cuenta Suspendida",
+                                msg,
+                                "Entendido",
+                                null,
+                                false,
+                                {},
+                                {}
+                            )
+                            return@addOnSuccessListener
+                        }
 
-                mediaVM.setMediaPost(datosPost)
+                        // Crear un nuevo mapa con los datos a guardar
+                        val datosPost: HashMap<String, Any?> = hashMapOf(
+                            "autorPostMedia" to autor,
+                            "cuerpoPostMedia" to cuerpo,
+                            "tituloPostMedia" to titulo,
+                            "linkStreamPostMedia" to link,
+                            "fechaPostMedia" to FieldValue.serverTimestamp(),
+                            "emailAutorPostMedia" to emailAutor,
+                            "likesPostMediaCount" to "0"
+                        )
+
+                        mediaVM.setMediaPost(datosPost)
+                    }
+                    .addOnFailureListener {
+                        btnPublicar.visibility = View.VISIBLE
+                        progresIc.visibility = View.GONE
+                        Toast.makeText(binding.root.context, "Error al verificar cuenta", Toast.LENGTH_SHORT).show()
+                    }
             }
 
         }

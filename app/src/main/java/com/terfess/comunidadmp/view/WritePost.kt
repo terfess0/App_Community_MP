@@ -119,27 +119,57 @@ class WritePost : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-
-
                     //mostrar progress ic en lugar de boton
                     btnPublicar.visibility = View.GONE
                     progresIc.visibility = View.VISIBLE
 
-
-
                     if (autor.isNullOrBlank()) autor = "unknown"
 
-                    // Crear un nuevo mapa con los datos a guardar
-                    val datosPost: HashMap<String, Any?> = hashMapOf(
-                        "tituloPost" to titulo,
-                        "cuerpoPost" to cuerpo,
-                        "autorPost" to autor,
-                        "imagenPost" to refImagen,
-                        "fechaPost" to FieldValue.serverTimestamp(),
-                        "emailAutorPost" to emailAutor
-                    )
+                    // Verificar estado de baneo antes de publicar
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("users")
+                        .whereEqualTo("userEmail", emailAutor)
+                        .get()
+                        .addOnSuccessListener { query ->
+                            if (!query.isEmpty && query.documents[0].getBoolean("isBanned") == true) {
+                                btnPublicar.visibility = View.VISIBLE
+                                progresIc.visibility = View.GONE
+                                val reason = query.documents[0].getString("banReason") ?: ""
+                                val msg = if (reason.isNotBlank()) {
+                                    "Tu cuenta está suspendida.\nMotivo: $reason"
+                                } else {
+                                    "Tu cuenta está suspendida por infracción a las normas."
+                                }
+                                Utilities().showAlert(
+                                    root.context,
+                                    "Cuenta Suspendida",
+                                    msg,
+                                    "Entendido",
+                                    null,
+                                    false,
+                                    {},
+                                    {}
+                                )
+                                return@addOnSuccessListener
+                            }
 
-                    postVM.setPost(datosPost)
+                            // Crear un nuevo mapa con los datos a guardar
+                            val datosPost: HashMap<String, Any?> = hashMapOf(
+                                "tituloPost" to titulo,
+                                "cuerpoPost" to cuerpo,
+                                "autorPost" to autor,
+                                "imagenPost" to refImagen,
+                                "fechaPost" to FieldValue.serverTimestamp(),
+                                "emailAutorPost" to emailAutor
+                            )
+
+                            postVM.setPost(datosPost)
+                        }
+                        .addOnFailureListener {
+                            btnPublicar.visibility = View.VISIBLE
+                            progresIc.visibility = View.GONE
+                            Toast.makeText(root.context, "Error al verificar cuenta", Toast.LENGTH_SHORT).show()
+                        }
                 }
 
             } else {

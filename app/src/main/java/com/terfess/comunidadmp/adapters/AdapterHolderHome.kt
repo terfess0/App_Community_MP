@@ -154,6 +154,55 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
                 )
             }
 
+            // Reportar publicación (UGC Google Play)
+            binding.btnReportPost.setOnClickListener {
+                val context = itemView.context
+                val reasons = arrayOf(
+                    "Spam o publicidad no deseada",
+                    "Contenido ofensivo o lenguaje inapropiado",
+                    "Aporte malicioso / Stealer / Mod con crash",
+                    "Acoso o difamación",
+                    "Otro motivo"
+                )
+
+                androidx.appcompat.app.AlertDialog.Builder(context)
+                    .setTitle("Reportar publicación")
+                    .setItems(reasons) { dialog, which ->
+                        val selectedReason = reasons[which]
+                        val currentUser = Firebase.auth.currentUser
+                        val reportData = hashMapOf(
+                            "idPost" to post.idPost,
+                            "postTitle" to post.tituloPost,
+                            "reportedAuthorEmail" to post.emailAutorPost,
+                            "reporterEmail" to (currentUser?.email ?: "guest"),
+                            "reason" to selectedReason,
+                            "date" to com.google.firebase.Timestamp.now()
+                        )
+
+                        db.collection("reports")
+                            .add(reportData)
+                            .addOnSuccessListener {
+                                com.google.android.material.snackbar.Snackbar.make(
+                                    itemView,
+                                    "Gracias por tu reporte. Nuestro equipo de moderación lo revisará.",
+                                    com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                            .addOnFailureListener {
+                                com.google.android.material.snackbar.Snackbar.make(
+                                    itemView,
+                                    "Error al enviar reporte. Inténtalo más tarde.",
+                                    com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+                                ).show()
+                            }
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Cancelar") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
             val rol = getCurrentUserRole()
 
             binding.deletePost.visibility = if (rol == Roles.ADMIN) {

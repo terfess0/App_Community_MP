@@ -109,14 +109,35 @@ class LoginFragment : Fragment() {
 
 
         viewModel.resultLoginEmlPsw.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                "SUCCESS" -> {
+            when {
+                result == "SUCCESS" -> {
                     Utilities().saveSharedpref(requireContext(), "LoginState", "true")
 
                     findNavController().navigate(R.id.action_navigation_login_to_navigation_home)
                 }
 
-                "ERROR_CREDENTIAL" -> {
+                result.startsWith("ACCOUNT_BANNED") -> {
+                    progressLog.visibility = View.GONE
+                    loginButton.visibility = View.VISIBLE
+                    val reason = result.removePrefix("ACCOUNT_BANNED:").trim()
+                    val msg = if (reason.isNotEmpty()) {
+                        "Tu cuenta ha sido suspendida por un moderador.\n\nMotivo: $reason"
+                    } else {
+                        "Tu cuenta ha sido suspendida por incumplir las normas de la comunidad."
+                    }
+                    Utilities().showAlert(
+                        requireContext(),
+                        "Cuenta Suspendida",
+                        msg,
+                        "Entendido",
+                        null,
+                        false,
+                        {},
+                        {}
+                    )
+                }
+
+                result == "ERROR_CREDENTIAL" -> {
                     anuncio.visibility = View.VISIBLE
                     anuncio.text = getString(R.string.credenciales_incorrectas)
 
@@ -124,7 +145,7 @@ class LoginFragment : Fragment() {
                     loginButton.visibility = View.VISIBLE
                 }
 
-                "NO_EXIST_OR_DISABLED" -> {
+                result == "NO_EXIST_OR_DISABLED" -> {
                     anuncio.visibility = View.VISIBLE
                     anuncio.text = getString(R.string.account_not_exist_registry)
 
@@ -132,7 +153,7 @@ class LoginFragment : Fragment() {
                     loginButton.visibility = View.VISIBLE
                 }
 
-                "ERROR_AUTH" -> {
+                result == "ERROR_AUTH" -> {
                     anuncio.visibility = View.VISIBLE
                     anuncio.text = getString(R.string.algo_ha_salido_mal_login)
 

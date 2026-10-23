@@ -70,9 +70,26 @@ class LoginRepository : ViewModel() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    callback.onLogin()
-                    Log.i("Login", "Inicio correctamente")
+                    usuariosRef.whereEqualTo("userEmail", email)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                val doc = querySnapshot.documents[0]
+                                val isBanned = doc.getBoolean("isBanned") ?: false
+                                val banReason = doc.getString("banReason") ?: ""
+                                if (isBanned) {
+                                    auth.signOut()
+                                    callback.onError("ACCOUNT_BANNED:$banReason")
+                                    return@addOnSuccessListener
+                                }
+                            }
+                            callback.onLogin()
+                            Log.i("Login", "Inicio correctamente")
+                        }
+                        .addOnFailureListener {
+                            callback.onLogin()
+                            Log.i("Login", "Inicio correctamente (offline/fallback)")
+                        }
                 } else {
                     //callback fail
                     when (task.exception) {
