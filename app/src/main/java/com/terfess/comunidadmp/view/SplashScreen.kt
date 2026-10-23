@@ -18,6 +18,7 @@ class SplashScreen : AppCompatActivity() {
         MobileAds.initialize(this) {}
 
         val transicion = Intent(this, MainActivity::class.java)
+        intent.extras?.let { transicion.putExtras(it) }
         startActivity(transicion)
         finish()
     }

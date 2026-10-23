@@ -149,7 +149,7 @@ class ModsSurveyFragment : Fragment() {
                     return@addOnSuccessListener
                 }
 
-                val voteData = hashMapOf(
+                val voteData = hashMapOf<String, Any?>(
                     "userEmail" to currentUser.email,
                     "wantsMods" to wantsMods,
                     "preferredType" to preferredType,

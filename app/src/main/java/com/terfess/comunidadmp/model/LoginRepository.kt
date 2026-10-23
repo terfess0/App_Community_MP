@@ -45,6 +45,7 @@ class LoginRepository : ViewModel() {
                     .set(nuevoUsuario)
                     .addOnSuccessListener {
                         // new document firebase user create successfully
+                        com.terfess.comunidadmp.notifications.PushNotificationHelper.syncUserPushTokens()
                         callback.onRegister()
                     }
                     .addOnFailureListener {
@@ -83,10 +84,12 @@ class LoginRepository : ViewModel() {
                                     return@addOnSuccessListener
                                 }
                             }
+                            com.terfess.comunidadmp.notifications.PushNotificationHelper.syncUserPushTokens()
                             callback.onLogin()
                             Log.i("Login", "Inicio correctamente")
                         }
                         .addOnFailureListener {
+                            com.terfess.comunidadmp.notifications.PushNotificationHelper.syncUserPushTokens()
                             callback.onLogin()
                             Log.i("Login", "Inicio correctamente (offline/fallback)")
                         }

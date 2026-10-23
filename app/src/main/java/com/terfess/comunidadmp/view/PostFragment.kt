@@ -22,12 +22,15 @@ import com.terfess.comunidadmp.adapters.CommentAdapter
 import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.databinding.FragmentPostBinding
 import com.terfess.comunidadmp.model.Comment
+import com.terfess.comunidadmp.model.Post
 import com.terfess.comunidadmp.viewmodel.InfoPostViewModel
 
 class PostFragment : Fragment() {
     private val viewModel: InfoPostViewModel by viewModels()
     private lateinit var binding: FragmentPostBinding
     private val arguments: PostFragmentArgs by navArgs()
+
+    private var currentPost: Post? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -116,12 +119,15 @@ class PostFragment : Fragment() {
                         userEmail = currentUser.email ?: "",
                         commentText = text
                     )
-                    viewModel.addComment(idPost, newComment)
+                    val authorEmail = currentPost?.emailAutorPost ?: ""
+                    val postTitle = currentPost?.tituloPost ?: ""
+                    viewModel.addComment(idPost, newComment, authorEmail, postTitle)
                 }
         }
 
         viewModel.postDetails.observe(viewLifecycleOwner) { info ->
             val post = info[0]
+            currentPost = post
             // Actualizar la UI con los datos del post
             binding.viewPostTitle.text = post.tituloPost
             binding.viewPostCategory.text = post.categoriaPost

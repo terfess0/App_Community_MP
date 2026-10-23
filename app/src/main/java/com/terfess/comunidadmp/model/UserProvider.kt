@@ -48,9 +48,11 @@ class UserProvider : ViewModel() {
                     val favorites = data.get("userFavorites") as? List<String> ?: emptyList()
                     val isBanned = data.getBoolean("isBanned") ?: false
                     val banReason = data.getString("banReason") ?: ""
+                    val fcmToken = data.getString("fcmToken") ?: ""
+                    val oneSignalId = data.getString("oneSignalId") ?: ""
 
                     //collect data
-                    userData = User(name, numPosts, email, joinDate, photo, role, favorites, isBanned, banReason)
+                    userData = User(name, numPosts, email, joinDate, photo, role, favorites, isBanned, banReason, fcmToken, oneSignalId)
 
                     // Logging user data
                     Log.i(

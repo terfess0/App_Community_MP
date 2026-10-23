@@ -23,8 +23,8 @@ class InfoPostViewModel : ViewModel(), GetPostCallback, CommentCallback {
         PostRepository().loadComments(this, postId)
     }
 
-    fun addComment(postId: String, comment: Comment) {
-        PostRepository().addComment(this, postId, comment)
+    fun addComment(postId: String, comment: Comment, postAuthorEmail: String = "", postTitle: String = "") {
+        PostRepository().addComment(this, postId, comment, postAuthorEmail, postTitle)
     }
 
     fun deleteComment(postId: String, commentId: String) {

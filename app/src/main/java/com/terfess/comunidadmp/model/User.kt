@@ -11,5 +11,7 @@ data class User(
     val userRole: String,
     val userFavorites: List<String>?,
     val isBanned: Boolean = false,
-    val banReason: String = ""
+    val banReason: String = "",
+    val fcmToken: String = "",
+    val oneSignalId: String = ""
 )

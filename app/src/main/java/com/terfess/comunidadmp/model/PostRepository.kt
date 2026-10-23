@@ -351,18 +351,42 @@ class PostRepository  {
             }
     }
 
-    fun addComment(callback: CommentCallback, postId: String, comment: Comment) {
+    fun addComment(
+        callback: CommentCallback,
+        postId: String,
+        comment: Comment,
+        postAuthorEmail: String = "",
+        postTitle: String = ""
+    ) {
         val commentData = hashMapOf(
             "userName" to comment.userName,
             "userEmail" to comment.userEmail,
             "commentText" to comment.commentText,
-            "fechaComment" to FieldValue.serverTimestamp()
+            "fechaComment" to FieldValue.serverTimestamp(),
+            "postAuthorEmail" to postAuthorEmail
         )
         db.collection("posts")
             .document(postId)
             .collection("comments")
             .add(commentData)
             .addOnSuccessListener {
+                // Si el autor de la publicación es diferente a quien comenta, dejamos el registro de notificación
+                // listo para Firebase Cloud Functions o para consulta directa
+                if (postAuthorEmail.isNotBlank() && postAuthorEmail != comment.userEmail) {
+                    val notifData = hashMapOf(
+                        "type" to "NEW_COMMENT",
+                        "targetUserEmail" to postAuthorEmail,
+                        "fromUserName" to comment.userName,
+                        "fromUserEmail" to comment.userEmail,
+                        "idPost" to postId,
+                        "postTitle" to postTitle,
+                        "commentText" to comment.commentText,
+                        "message" to "${comment.userName} comentó en tu publicación \"$postTitle\"",
+                        "createdAt" to FieldValue.serverTimestamp(),
+                        "read" to false
+                    )
+                    db.collection("notifications").add(notifData)
+                }
                 callback.onCommentAdded()
             }
             .addOnFailureListener { e ->

@@ -255,6 +255,7 @@ class AccountFragment : Fragment() {
         binding.buttonCerrarSesion.setOnClickListener {
             // Usuario presiona botón cerrar sesión
             Utilities().saveSharedpref(requireContext(), "LoginState", "false")
+            com.terfess.comunidadmp.notifications.PushNotificationHelper.onUserLogout()
             Firebase.auth.signOut()
             Snackbar.make(root, "Saliste de tu cuenta.", Snackbar.LENGTH_SHORT).show()
 

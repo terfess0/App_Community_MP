@@ -58,6 +58,35 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        // Sincronizar tokens de notificación (OneSignal + FCM)
+        com.terfess.comunidadmp.notifications.PushNotificationHelper.syncUserPushTokens()
+        com.terfess.comunidadmp.notifications.PushNotificationHelper.requestNotificationPermission(this)
+
+        // Manejar apertura directa desde notificación (Intent extras)
+        handleNotificationIntent(intent)
     }
 
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleNotificationIntent(intent)
+    }
+
+    private fun handleNotificationIntent(intent: android.content.Intent?) {
+        val postId = intent?.getStringExtra("postDocumentId")
+            ?: intent?.getStringExtra("postId")
+
+        if (!postId.isNullOrBlank()) {
+            try {
+                val navController = findNavController(R.id.nav_host_fragment_activity_main)
+                val bundle = Bundle().apply {
+                    putString("postDocumentId", postId)
+                }
+                navController.navigate(R.id.postFragment, bundle)
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Error navegando a post desde notificación: ${e.message}")
+            }
+        }
+    }
 }
