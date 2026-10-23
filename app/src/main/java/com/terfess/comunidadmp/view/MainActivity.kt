@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         // Asegurar que en modo claro los iconos de la barra de estado sean oscuros y visibles
         val isNightMode = (resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES
         androidx.core.view.WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = !isNightMode
@@ -27,7 +29,8 @@ class MainActivity : AppCompatActivity() {
 
         MobileAds.initialize(this) {}
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as androidx.navigation.fragment.NavHostFragment
+        val navController = navHostFragment.navController
 
         // Configurar AppBarConfiguration con los destinos de nivel superior
 //        AppBarConfiguration(
@@ -81,11 +84,14 @@ class MainActivity : AppCompatActivity() {
 
         if (!postId.isNullOrBlank()) {
             try {
-                val navController = findNavController(R.id.nav_host_fragment_activity_main)
-                val bundle = Bundle().apply {
-                    putString("postDocumentId", postId)
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as? androidx.navigation.fragment.NavHostFragment
+                val navController = navHostFragment?.navController
+                if (navController != null) {
+                    val bundle = Bundle().apply {
+                        putString("postDocumentId", postId)
+                    }
+                    navController.navigate(R.id.postFragment, bundle)
                 }
-                navController.navigate(R.id.postFragment, bundle)
             } catch (e: Exception) {
                 android.util.Log.e("MainActivity", "Error navegando a post desde notificación: ${e.message}")
             }
