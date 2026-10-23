@@ -152,7 +152,9 @@ class LoginFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    requireActivity().finish() // Cierra la actividad actual
+                    if (!findNavController().popBackStack()) {
+                        requireActivity().finish()
+                    }
                 }
             })
 

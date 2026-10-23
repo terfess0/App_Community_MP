@@ -9,7 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.android.material.snackbar.Snackbar
+import com.terfess.comunidadmp.R
 import com.terfess.comunidadmp.adapters.AdapterHolderFavorites
 import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.databinding.FragmentFavoritesBinding
@@ -46,6 +50,16 @@ class FavoritesFragment : Fragment() {
         reciclerGuardados.adapter = adaptador
         reciclerGuardados.layoutManager = LinearLayoutManager(requireContext())
 
+        val currentUser = Firebase.auth.currentUser
+        if (currentUser == null || currentUser.isAnonymous) {
+            progressBar.visibility = View.GONE
+            binding.noPostsText.text = "Inicia sesión para guardar y ver tus publicaciones favoritas\n(Toca aquí para iniciar sesión)"
+            binding.noPostsText.visibility = View.VISIBLE
+            binding.noPostsText.setOnClickListener {
+                findNavController().navigate(R.id.action_favoritesFragment_to_navigation_login)
+            }
+            return
+        }
 
         favoritesViewModel.getFavorites()
 

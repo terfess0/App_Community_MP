@@ -16,6 +16,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.terfess.comunidadmp.classes.Roles
 import com.terfess.comunidadmp.classes.UserRole.getCurrentUserRole
+import com.terfess.comunidadmp.classes.Utilities
 import com.terfess.comunidadmp.databinding.FormatoNewsRecyclerBinding
 import com.terfess.comunidadmp.model.UserProvider
 import com.terfess.comunidadmp.view.HomeFragmentDirections
@@ -96,11 +97,26 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
             val btn_save_post = binding.btnSavePost
             btn_save_post.visibility = View.VISIBLE
             btn_save_post.setOnClickListener {
-                //al tocar se guarda el post y el boton desaparece
-                btn_save_post.setImageResource(R.drawable.ic_post_saved)
-                viewModel.addFavorite(user?.email.toString(), post.idPost)
-                btn_save_post.isClickable = false
-                btn_save_post.isEnabled = false
+                val currentUser = Firebase.auth.currentUser
+                if (currentUser == null || currentUser.isAnonymous || currentUser.email.isNullOrBlank()) {
+                    Utilities().showAlert(
+                        itemView.context,
+                        "Inicia Sesión",
+                        "Para guardar publicaciones debes iniciar sesión",
+                        "Iniciar sesión",
+                        "Cancelar",
+                        false,
+                        {
+                            binding.root.findNavController().navigate(R.id.action_navigation_home_to_navigation_login)
+                        },
+                        {}
+                    )
+                } else {
+                    btn_save_post.setImageResource(R.drawable.ic_post_saved)
+                    viewModel.addFavorite(currentUser.email.toString(), post.idPost)
+                    btn_save_post.isClickable = false
+                    btn_save_post.isEnabled = false
+                }
             }
 
             perfilAutorImg.setImageResource(R.drawable.predet_image)

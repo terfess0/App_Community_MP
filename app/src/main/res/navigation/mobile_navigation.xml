@@ -107,6 +107,9 @@
         <action
             android:id="@+id/action_favoritesFragment_to_navigation_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_favoritesFragment_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
     <fragment
         android:id="@+id/mediaFragment"

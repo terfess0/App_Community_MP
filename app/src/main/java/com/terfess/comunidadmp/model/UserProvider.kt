@@ -22,10 +22,18 @@ class UserProvider : ViewModel() {
     private val user = Firebase.auth.currentUser
 
     fun getUserAccount(callback: GetUserCallback) {
+        val currentUser = Firebase.auth.currentUser
+        val userEmail = currentUser?.email
+
+        if (currentUser == null || currentUser.isAnonymous || userEmail.isNullOrBlank()) {
+            callback.onGetUser(User("", "", "", "", "", "", emptyList()))
+            return
+        }
+
         var userData = User("", "", "", "", "", "", emptyList())
 
         db.collection("users")
-            .whereEqualTo("userEmail", user?.email.toString())
+            .whereEqualTo("userEmail", userEmail)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
@@ -50,13 +58,11 @@ class UserProvider : ViewModel() {
                     for (favorite in favorites) {
                         Log.i("UserFavorites", "Favorite: $favorite")
                     }
-
-                    // Callback to pass the user data
-                    callback.onGetUser(userData)
                 }
                 callback.onGetUser(userData)
             }.addOnFailureListener { e ->
                 println("an error has ocurred on get imagen profile := $e")
+                callback.onGetUser(userData)
             }
     }
 

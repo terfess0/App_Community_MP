@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.Firebase
@@ -75,11 +76,26 @@ class AdapterHolderMedia(
             val btnLikePost = binding.btnLike
 
             btnLikePost.setOnClickListener {
-                //al tocar se guarda el post y el boton desaparece
-                btnLikePost.setImageResource(R.drawable.ic_like_heart)
-                viewModel.likeMediaPost(post.idPostMedia)
-                btnLikePost.isClickable = false
-                btnLikePost.isEnabled = false
+                val currentUser = Firebase.auth.currentUser
+                if (currentUser == null || currentUser.isAnonymous || currentUser.email.isNullOrBlank()) {
+                    Utilities().showAlert(
+                        itemView.context,
+                        "Inicia Sesión",
+                        "Para dar me gusta debes iniciar sesión",
+                        "Iniciar sesión",
+                        "Cancelar",
+                        false,
+                        {
+                            binding.root.findNavController().navigate(R.id.action_mediaFragment_to_navigation_login)
+                        },
+                        {}
+                    )
+                } else {
+                    btnLikePost.setImageResource(R.drawable.ic_like_heart)
+                    viewModel.likeMediaPost(post.idPostMedia)
+                    btnLikePost.isClickable = false
+                    btnLikePost.isEnabled = false
+                }
             }
 
             perfilAutorImg.setImageResource(R.drawable.predet_image)
