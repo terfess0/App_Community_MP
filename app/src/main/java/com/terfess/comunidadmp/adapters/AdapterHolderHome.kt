@@ -73,9 +73,15 @@ class AdapterHolderHome(private var data: MutableList<Post>, private val viewMod
             // Mostrar publicación
             nombreAutor.text = post.autorPost
             titleTextView.text = post.tituloPost
-            cuerpoPost.text = post.cuerpoPost
+            com.terfess.comunidadmp.classes.MarkdownUtils.renderMarkdown(cuerpoPost, post.cuerpoPost)
             datePost.text = post.fechaPost.toString().substring(0, 10)
             binding.categoryPost.text = post.categoriaPost
+
+            binding.leerMas.setOnClickListener {
+                binding.root.findNavController().navigate(
+                    HomeFragmentDirections.actionNavigationHomeToPostFragment(postDocumentId = post.idPost)
+                )
+            }
 
             //show ad
             val visibil = if (showAd) View.VISIBLE else View.GONE

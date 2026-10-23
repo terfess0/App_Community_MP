@@ -7,46 +7,52 @@
     android:fitsSystemWindows="true"
     tools:context=".view.PostFragment">
 
+    <!-- TOOLBAR SUPERIOR -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:contentInsetStart="0dp"
-        android:contentInsetLeft="0dp"
-        android:contentInsetEnd="0dp"
-        android:contentInsetRight="0dp"
         android:elevation="4dp"
-        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="start"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Regresar"
             android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Publicación"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/btn_report_post_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="end"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Reportar publicación"
             android:src="@drawable/ic_report" />
     </androidx.appcompat.widget.Toolbar>
 
+    <!-- CONTENIDO SCROLLABLE -->
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingHorizontal="10dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,140 +61,165 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="24dp">
 
-            <RelativeLayout
+            <!-- CABECERA DEL AUTOR Y METADATA -->
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/viewPostTitle"
-                    android:layout_width="match_parent"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/contain_author_avatar"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/imgAuthorDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Avatar del autor"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/predet_image" />
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAlignment="viewStart"
-                    android:textAllCaps="true"
-                    android:textColor="@color/naranja_enfasis"
-                    android:textIsSelectable="true"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/viewPostDate"
+                    app:layout_constraintStart_toEndOf="@id/contain_author_avatar"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/viewPostAutor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="@Carl_Johnson" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fecha: " />
+                    <TextView
+                        android:id="@+id/viewPostCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/borde_boton"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textColor="@color/morado_enfasis"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        tools:text="Roleplay" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/viewPostDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textIsSelectable="true" />
-            </LinearLayout>
+                    android:textColor="@color/gris_shimer"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="2026-10-23" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <!-- TÍTULO DE LA PUBLICACIÓN -->
+            <TextView
+                android:id="@+id/viewPostTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="16dp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="@color/naranja_enfasis"
+                android:textIsSelectable="true"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                tools:text="NUEVO SERVIDOR LOS SANTOS ROLEPLAY 2026" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Autor: " />
-
-                <TextView
-                    android:id="@+id/viewPostAutor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textIsSelectable="true" />
-            </LinearLayout>
-
-            <LinearLayout
+            <!-- DIVISOR SUTIL -->
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="1dp"
+                android:layout_marginVertical="12dp"
+                android:background="#15888888" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Categoría: " />
-
-                <TextView
-                    android:id="@+id/viewPostCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/naranja_enfasis"
-                    android:textStyle="bold"
-                    android:text="General" />
-            </LinearLayout>
-
+            <!-- CUERPO DE LA PUBLICACIÓN (SOPORTE MARKDOWN) -->
             <TextView
                 android:id="@+id/viewPostContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
-                android:autoLink="web"
+                android:lineSpacingExtra="4dp"
                 android:textIsSelectable="true"
-                android:textStyle="bold" />
+                android:textSize="15sp"
+                tools:text="Este es el cuerpo con soporte completo de **Markdown** para negritas, enlaces, citas y listas..." />
 
+            <!-- IMÁGENES DEL POST -->
             <TextView
+                android:id="@+id/tvDeslize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvDeslize"
+                android:layout_marginTop="14dp"
                 android:text="@string/desliza_horizontalmente"
-                android:textColor="@color/gris_transparent" />
+                android:textColor="@color/gris_transparent"
+                android:textSize="12sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/viewPostImages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
+                android:layout_marginTop="6dp"
                 android:background="@color/transparente"
-                android:backgroundTint="@color/transparente"
-                android:padding="5dp" />
+                android:nestedScrollingEnabled="false"
+                android:paddingVertical="4dp" />
 
+            <!-- SECCIÓN DE COMENTARIOS -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginVertical="16dp"
-                android:background="@color/gris_shimer" />
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="14dp"
+                android:background="#15888888" />
 
             <TextView
                 android:id="@+id/tvComentariosHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Comentarios"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
+                android:text="Comentarios de la Comunidad"
                 android:textColor="@color/morado_enfasis"
-                android:layout_marginBottom="8dp" />
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
-            <!-- Input de comentarios -->
+            <!-- INPUT DE COMENTARIOS -->
             <LinearLayout
                 android:id="@+id/containerCommentInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginBottom="14dp"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/editCommentText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/borde_boton"
                     android:hint="Escribe un comentario..."
                     android:maxLines="3"
-                    android:background="@drawable/borde_boton"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
                     android:textSize="14sp" />
 
                 <ImageButton
@@ -198,6 +229,8 @@
                     android:layout_marginStart="8dp"
                     android:background="@drawable/borde_boton"
                     android:contentDescription="Enviar comentario"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_send" />
             </LinearLayout>
 
@@ -205,18 +238,19 @@
                 android:id="@+id/tvNoComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sé el primero en comentar esta publicación"
-                android:textColor="@color/gris_transparent"
-                android:textAlignment="center"
                 android:layout_marginVertical="16dp"
+                android:text="Sé el primero en comentar esta publicación"
+                android:textAlignment="center"
+                android:textColor="@color/gris_transparent"
+                android:textSize="13sp"
                 android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginBottom="24dp" />
+                android:layout_marginBottom="24dp"
+                android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
     </ScrollView>

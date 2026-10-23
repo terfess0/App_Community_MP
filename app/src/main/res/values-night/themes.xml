@@ -12,6 +12,7 @@
         <item name="colorOnTertiaryContainer">@color/gris_shimer_night</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <!-- Customize your theme here. -->
         <item name="fontFamily">@font/open_sans</item>
     </style>

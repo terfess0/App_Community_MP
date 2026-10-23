@@ -1,219 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/publicacion_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparente"
-    android:backgroundTint="@color/transparente"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:paddingHorizontal="2dp"
-    android:layout_marginVertical="2dp">
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/contain_img_profile"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginVertical="2dp"
-        app:cardCornerRadius="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/imgProfileAuthor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="Imagen de perfil autor"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@mipmap/ic_launcher" />
-    </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/tituloP"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="1"
-        android:textColor="@color/naranja_enfasis"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/contain_img_profile"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/nickAuthor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="2dp"
-        android:gravity="start"
-        app:layout_constraintBottom_toBottomOf="@+id/contain_img_profile"
-        app:layout_constraintStart_toEndOf="@+id/contain_img_profile"
-        app:layout_constraintTop_toBottomOf="@+id/tituloP" />
-
-    <TextView
-        android:id="@+id/categoryPost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/borde_boton"
-        android:paddingHorizontal="6dp"
-        android:paddingVertical="1dp"
-        android:textColor="@color/morado_enfasis"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/contain_img_profile"
-        app:layout_constraintStart_toEndOf="@+id/nickAuthor"
-        app:layout_constraintTop_toBottomOf="@+id/tituloP"
-        tools:text="General" />
-
-    <TextView
-        android:id="@+id/datePost"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="2dp"
-        android:gravity="end"
-        app:layout_constraintBottom_toBottomOf="@+id/contain_img_profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tituloP" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/contain_imgP"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="5dp"
-        android:layout_marginTop="89dp"
-        android:maxHeight="150dp"
-        android:minHeight="90dp"
-        app:cardCornerRadius="4dp"
-        app:layout_constraintEnd_toStartOf="@id/guideline2"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickAuthor">
-
-        <ImageView
-            android:id="@+id/imgP"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
-    </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/cuerpoP"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:maxLines="5"
-        android:text="asdasdasdasda"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/contain_btns_actions"
-        app:layout_constraintEnd_toStartOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contain_imgP" />
-
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#1F888888"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
-        android:id="@+id/contain_btns_actions"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="end"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/view2"
-        app:layout_constraintEnd_toStartOf="@id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cuerpoP">
+        android:orientation="vertical"
+        android:padding="12dp">
 
+        <!-- CABECERA: Perfil, Autor, Categoría, Fecha -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/contain_img_profile"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                app:cardCornerRadius="19dp"
+                app:cardElevation="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:id="@+id/imgProfileAuthor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Imagen de perfil autor"
+                    android:scaleType="centerCrop"
+                    tools:srcCompat="@mipmap/ic_launcher" />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toEndOf="@id/contain_img_profile"
+                app:layout_constraintEnd_toStartOf="@id/datePost"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/nickAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="Tommy_Vercetti" />
+
+                <TextView
+                    android:id="@+id/categoryPost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/borde_boton"
+                    android:paddingHorizontal="7dp"
+                    android:paddingVertical="1dp"
+                    android:textColor="@color/morado_enfasis"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    tools:text="General" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/datePost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gris_shimer"
+                android:textSize="11.5sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2026-10-23" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- TÍTULO DEL POST -->
         <TextView
-            android:id="@+id/leer_mas"
-            android:layout_width="0dp"
+            android:id="@+id/tituloP"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="15"
-            android:text="@string/leer_mas"
-            android:textAlignment="center"
-            android:textColor="@color/morado_enfasis"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/naranja_enfasis"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cuerpoP" />
+            tools:text="Gran apertura de servidor Roleplay SA-MP" />
+
+        <!-- IMAGEN DEL POST (OPCIONAL) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/contain_imgP"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/imgP"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- CUERPO DEL POST (MARKDOWN PREVIEW) -->
+        <TextView
+            android:id="@+id/cuerpoP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2dp"
+            android:maxLines="4"
+            android:textSize="13.5sp"
+            tools:text="Contenido en markdown de la publicación con detalles de SA-MP..." />
+
+        <!-- LÍNEA SEPARADORA SUTIL -->
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="6dp"
+            android:background="#15888888" />
+
+        <!-- BARRA INFERIOR DE ACCIONES -->
+        <LinearLayout
+            android:id="@+id/contain_btns_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_save_post"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Guardar Post"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_save_post" />
+
+            <ImageButton
+                android:id="@+id/btn_report_post"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Reportar Publicación"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_report" />
+
+            <ImageButton
+                android:id="@+id/deletePost"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Eliminar Post"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_delete"
+                android:visibility="gone" />
+
+            <!-- Espacio flexible -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Botón Leer más -->
+            <TextView
+                android:id="@+id/leer_mas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="6dp"
+                android:text="@string/leer_mas"
+                android:textColor="@color/morado_enfasis"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- BANNER PUBLICITARIO ADMOB (OPCIONAL) -->
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:adSize="BANNER"
+            app:adUnitId="@string/fake_key_screens_ad" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toEndOf="@id/guideline2"
-        app:layout_constraintBottom_toTopOf="@id/view2"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@id/datePost">
-
-        <ImageButton
-            android:id="@+id/btn_save_post"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/transparente"
-            android:contentDescription="Guardar Post"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_save_post" />
-
-        <ImageButton
-            android:id="@+id/btn_report_post"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/transparente"
-            android:contentDescription="Reportar Publicación"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_report" />
-
-        <ImageButton
-            android:id="@+id/deletePost"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/transparente"
-            android:contentDescription="Guardar Post"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_delete"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:paddingHorizontal="30dp"
-        android:background="@color/gris_shimer"
-        app:layout_constraintBottom_toTopOf="@id/adView"
-        app:layout_constraintTop_toBottomOf="@+id/contain_btns_actions"
-        tools:layout_editor_absoluteX="10dp" />
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:adSize="BANNER"
-        app:adUnitId="@string/fake_key_screens_ad"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="362dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

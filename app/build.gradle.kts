@@ -78,6 +78,10 @@ dependencies {
     //onesignal
     implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
 
+    //markdown markwon
+    implementation("io.noties.markwon:core:4.6.2")
+    implementation("io.noties.markwon:linkify:4.6.2")
+
     //glide fotos
     implementation("com.github.bumptech.glide:glide:4.16.0")
 

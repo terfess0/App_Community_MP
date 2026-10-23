@@ -52,7 +52,7 @@ class AdapterHolderFavorites(
             // Mostrar publicación
             nombreAutor.text = post.autorPost
             titleTextView.text = post.tituloPost
-            cuerpoPost.text = post.cuerpoPost
+            com.terfess.comunidadmp.classes.MarkdownUtils.renderMarkdown(cuerpoPost, post.cuerpoPost)
             datePost.text = post.fechaPost.toString().substring(0, 10)
 
             // Visibilidad de la imagen del post

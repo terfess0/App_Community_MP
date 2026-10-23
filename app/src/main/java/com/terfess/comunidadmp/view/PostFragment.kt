@@ -133,10 +133,7 @@ class PostFragment : Fragment() {
             binding.viewPostCategory.text = post.categoriaPost
 
             val cuerpoTxt = binding.viewPostContent
-            cuerpoTxt.text = post.cuerpoPost
-
-            Linkify.addLinks(cuerpoTxt, Linkify.WEB_URLS)
-            cuerpoTxt.movementMethod = android.text.method.LinkMovementMethod.getInstance()
+            com.terfess.comunidadmp.classes.MarkdownUtils.renderMarkdown(cuerpoTxt, post.cuerpoPost)
 
             if (post.imagenPost.isNotEmpty()) {
                 recyclerimage.adapter =
@@ -145,7 +142,7 @@ class PostFragment : Fragment() {
                 binding.tvDeslize.visibility = View.GONE
             }
 
-            // Cargar foto de perfil del autor
+            // Cargar foto y nombre de perfil del autor
             db.collection("users")
                 .whereEqualTo("userEmail", post.emailAutorPost)
                 .get()
@@ -153,6 +150,16 @@ class PostFragment : Fragment() {
                     if (!querySnapshot.isEmpty) {
                         val document = querySnapshot.documents[0]
                         val nameAuthor = document.getString("userName")
+                        val photoAuthor = document.getString("userPhoto")
+
+                        if (!photoAuthor.isNullOrBlank()) {
+                            com.bumptech.glide.Glide.with(this)
+                                .load(photoAuthor)
+                                .placeholder(R.drawable.predet_image)
+                                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.ALL)
+                                .into(binding.imgAuthorDetail)
+                        }
+
                         if (nameAuthor?.isNotBlank() == true) {
                             binding.viewPostAutor.text = "@$nameAuthor"
                         } else {
